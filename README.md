@@ -31,7 +31,7 @@ pin: 'GPIO18'
 
 pin_option: 'single'
 
-Split Pin 1-Wire Bus
+# Split Pin 1-Wire Bus
 ow_bus_ng:
 
 pin_option: 'split_io'
