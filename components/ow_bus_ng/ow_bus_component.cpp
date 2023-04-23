@@ -103,8 +103,6 @@
 // }  // namespace ow_bus_ng
 // }  // namespace esphome
 
-#pragma once
-
 #include "ow_bus_component.h"
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
@@ -112,23 +110,53 @@
 namespace esphome {
 namespace ow_bus_ng {
 
-class ESPHomeOneWireNGComponent : public Component {
- public:
-  ESPHomeOneWireNGComponent() : pin_config_(OneWirePinConfig::SINGLE_PIN) {}
+static const char *const TAG = "owbus.ng";
 
-  ESPHomeOneWireNGComponent(InternalGPIOPin *pin) : pin_(pin), pin_config_(OneWirePinConfig::SINGLE_PIN) {}
+void ESPHomeOneWireNGComponent::setup() {
+  ESP_LOGCONFIG(TAG, "Setting up ESPHomeOneWireNGComponent...");
 
-  ESPHomeOneWireNGComponent(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin)
-      : input_pin_(input_pin), output_pin_(output_pin), pin_config_(OneWirePinConfig::SPLIT_IO) {}
+  switch (this->pin_config_) {
+    case OneWire::SINGLE_PIN:
+      if (this->pin_ != nullptr) {
+        this->pin_->setup();
+        // Initialize 1-Wire bus and search for devices
+      }
+      break;
+    case OneWire::SPLIT_IO:
+      this->input_pin_->setup();
+      this->output_pin_->setup();
+      // Initialize 1-Wire bus and search for devices
+      break;
+  }
+}
 
-  enum OneWirePinConfig { SINGLE_PIN, SPLIT_IO };
+void ESPHomeOneWireNGComponent::dump_config() {
+  ESP_LOGD(TAG, "Configuration:");
+  switch (this->pin_config_) {
+    case OneWire::SINGLE_PIN:
+      ESP_LOGD(TAG, "  pin_config: SINGLE_PIN");
+      if (this->pin_ != nullptr) {
+        ESP_LOGD(TAG, "  pin: %d", this->pin_->get_pin());
+      }
+      break;
+    case OneWire::SPLIT_IO:
+      ESP_LOGD(TAG, "  pin_config: SPLIT_IO");
+      if (this->input_pin_ != nullptr) {
+        ESP_LOGD(TAG, "  input_pin: %d", this->input_pin_->get_pin());
+      }
+      if (this->output_pin_ != nullptr) {
+        ESP_LOGD(TAG, "  output_pin: %d", this->output_pin_->get_pin());
+      }
+      break;
+  }
+}
 
- protected:
-  InternalGPIOPin *pin_{nullptr};
-  InternalGPIOPin *input_pin_{nullptr};
-  InternalGPIOPin *output_pin_{nullptr};
-  OneWirePinConfig pin_config_;
-};
+ESPHomeOneWireNGComponent() : pin_config_(OneWire::SINGLE_PIN) {}
+
+ESPHomeOneWireNGComponent(InternalGPIOPin *pin) : pin_(pin), pin_config_(OneWire::SINGLE_PIN) {}
+
+ESPHomeOneWireNGComponent(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin)
+    : input_pin_(input_pin), output_pin_(output_pin), pin_config_(OneWire::SPLIT_IO) {}
 
 }  // namespace ow_bus_ng
 }  // namespace esphome

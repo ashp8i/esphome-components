@@ -1,11 +1,11 @@
-#pragma once
+// #pragma once
 
-#include "esphome/core/hal.h"
-#include "esphome/core/component.h"
-#include <vector>
+// #include "esphome/core/hal.h"
+// #include "esphome/core/component.h"
+// #include <vector>
 
-namespace esphome {
-namespace ow_bus_ng {
+// namespace esphome {
+// namespace ow_bus_ng {
 
 // enum class OneWireBusPinConfig {
 //   ONEWIRE_BUS_PIN_SINGLE,
@@ -40,38 +40,31 @@ namespace ow_bus_ng {
 //   void InitOWBus();
 // };
 
+#pragma once
+
+#include "esphome/core/hal.h"
+#include "esphome/core/component.h"
+#include <vector>
+
+namespace esphome {
+namespace ow_bus_ng {
+
 class ESPHomeOneWireNGComponent : public Component {
  public:
-  OneWire() : OneWire(nullptr, OneWire::SINGLE_PIN) {}  // Default to single pin
+  ESPHomeOneWireNGComponent() : pin_config_(OneWirePinConfig::SINGLE_PIN) {}
 
-  OneWire(InternalGPIOPin *pin) : OneWire(pin, OneWire::SINGLE_PIN) {}
+  ESPHomeOneWireNGComponent(InternalGPIOPin *pin) : pin_(pin), pin_config_(OneWirePinConfig::SINGLE_PIN) {}
 
-  OneWire(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin)
-      : pin_config_(OneWire::SPLIT_IO), input_pin_(input_pin), output_pin_(output_pin) {}
+  ESPHomeOneWireNGComponent(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin)
+      : input_pin_(input_pin), output_pin_(output_pin), pin_config_(OneWirePinConfig::SPLIT_IO) {}
 
-  void setup() override {
-    switch (this->pin_config_) {
-      case OneWire::SINGLE_PIN:
-        if (this->pin_ != nullptr) {
-          this->pin_->setup();
-          // Initialize bus and search for devices
-        }
-        break;
-      case OneWire::SPLIT_IO:
-        this->input_pin_->setup();
-        this->output_pin_->setup();
-        // Initialize bus and search for devices
-        break;
-    }
-  }
+  enum OneWirePinConfig { SINGLE_PIN, SPLIT_IO };
 
-  enum PinConfig { SINGLE_PIN, SPLIT_IO };
-
- private:
-  PinConfig pin_config_;
-  InternalGPIOPin *pin_;         // For SINGLE_PIN config
-  InternalGPIOPin *input_pin_;   // For SPLIT_IO config
-  InternalGPIOPin *output_pin_;  // For SPLIT_IO config
+ protected:
+  InternalGPIOPin *pin_{nullptr};
+  InternalGPIOPin *input_pin_{nullptr};
+  InternalGPIOPin *output_pin_{nullptr};
+  OneWirePinConfig pin_config_;
 };
 
 }  // namespace ow_bus_ng
