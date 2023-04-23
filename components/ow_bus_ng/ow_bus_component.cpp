@@ -123,7 +123,7 @@ void ESPHomeOneWireNGComponent::set_split_io(esphome::InternalGPIOPin *input_pin
 }
 
 // Constructor definitions here
-ESPHomeOneWireNGComponent() : Component() {}
+ESPHomeOneWireNGComponent() : Component(), pin_config_(OneWirePinConfig::SINGLE_PIN) {}
 
 ESPHomeOneWireNGComponent(InternalGPIOPin *pin) : Component(), pin_(pin), pin_config_(OneWirePinConfig::SINGLE_PIN) {}
 
