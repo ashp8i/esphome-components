@@ -1,6 +1,6 @@
 #pragma once
 
-#include "esphome/core/hal.h"  
+#include "esphome/core/hal.h"
 #include "esphome/core/component.h"
 #include <vector>
 
@@ -14,16 +14,10 @@ enum class OneWireBusPinConfig {
 
 class ESPHomeOneWireNGComponent : public Component {
  public:
-  ESPHomeOneWireNGComponent(OneWireBusPinConfig pin_config,  
-                             InternalGPIOPin *input_pin,  
-                             InternalGPIOPin *output_pin,  
-                             InternalGPIOPin *pin) 
-  : pin_{pin}
-  , input_pin_{input_pin}
-  , output_pin_{output_pin}
-  , split_io_{pin_config}
-  {}   
-  
+  ESPHomeOneWireNGComponent(OneWireBusPinConfig pin_config, InternalGPIOPin *input_pin, InternalGPIOPin *output_pin,
+                            InternalGPIOPin *pin)
+      : pin_{pin}, input_pin_{input_pin}, output_pin_{output_pin}, split_io_{pin_config} {}
+  virtual ~ESPHomeOneWireNGComponent();
   void setup() override;
   void dump_config() override;
   void update();
@@ -32,7 +26,7 @@ class ESPHomeOneWireNGComponent : public Component {
   void set_in_pin(InternalGPIOPin *in_pin);
   void set_out_pin(InternalGPIOPin *out_pin);
   void set_split_io(OneWireBusPinConfig split_io);
-  
+
   void issue_reset();
   void issue_skip_rom();
   void issue_command(uint8_t);
@@ -42,9 +36,8 @@ class ESPHomeOneWireNGComponent : public Component {
   InternalGPIOPin *pin_{nullptr};
   InternalGPIOPin *input_pin_{nullptr};
   InternalGPIOPin *output_pin_{nullptr};
-  
-  void init_ow_bus();
-   
+
+  void InitOWBus();
 };
 
 } // namespace ow_bus_ng

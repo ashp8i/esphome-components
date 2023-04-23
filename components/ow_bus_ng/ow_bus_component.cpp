@@ -5,35 +5,35 @@
 namespace esphome {
 namespace ow_bus_ng {
 
-static const char *const TAG = "owbus.ng";  
+static const char *const TAG = "owbus.ng";
 
-void ESPHomeOneWireNGComponent::setup() {       
-  ESP_LOGCONFIG(TAG, "Setting up ESPHomeOneWireNGComponent...");   
-  
+void ESPHomeOneWireNGComponent::setup() {
+  ESP_LOGCONFIG(TAG, "Setting up ESPHomeOneWireNGComponent...");
+
   if (this->split_io_ == OneWireBusPinConfig::ONEWIRE_BUS_PIN_SINGLE) {
-    if (this->pin_ != nullptr) {  
-      this->pin_->setup();     
-    } 
+    if (this->pin_ != nullptr) {
+      this->pin_->setup();
+    }
   } else if (this->split_io_ == OneWireBusPinConfig::ONEWIRE_BUS_PIN_SPLIT) {
     this->input_pin_->setup();
     this->output_pin_->setup();
   }
-  
-  this->init_ow_bus();   
-  
-  // std::vector<uint64_t> raw_devices;  
-}  
 
-void ESPHomeOneWireNGComponent::init_ow_bus() {
+  this->InitOWBus();
+
+  // std::vector<uint64_t> raw_devices;
+}
+
+void ESPHomeOneWireNGComponent::InitOWBus() {
   ESP_LOGD(TAG, "OneWire bus initialized! Scanning for devices...");
-  
+
   if (this->split_io_ == OneWireBusPinConfig::ONEWIRE_BUS_PIN_SINGLE) {
     if (this->pin_ != nullptr) {
       this->pin_->pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLUP);
       delayMicroseconds(480);
       // Scan bus and get list of devices
-      // raw_devices = ...  
-    } 
+      // raw_devices = ...
+    }
   } else if (this->split_io_ == OneWireBusPinConfig::ONEWIRE_BUS_PIN_SPLIT) {
     this->input_pin_->pin_mode(gpio::FLAG_INPUT);
     this->output_pin_->pin_mode(gpio::FLAG_OUTPUT);
@@ -44,19 +44,20 @@ void ESPHomeOneWireNGComponent::init_ow_bus() {
 
 void ESPHomeOneWireNGComponent::set_split_io(OneWireBusPinConfig split_io) {
   if (split_io != this->split_io_) {
-    this->split_io_ = split_io; 
-    
+    this->split_io_ = split_io;
+
     if (this->split_io_ == OneWireBusPinConfig::ONEWIRE_BUS_PIN_SINGLE) {
       if (this->pin_ != nullptr) {
         this->pin_->pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLUP);
       }
-    } 
-    
-    else if (this->split_io_ == OneWireBusPinConfig::ONEWIRE_BUS_PIN_SPLIT && this->input_pin_ != nullptr && this->output_pin_ != nullptr) {
+    }
+
+    else if (this->split_io_ == OneWireBusPinConfig::ONEWIRE_BUS_PIN_SPLIT && this->input_pin_ != nullptr &&
+             this->output_pin_ != nullptr) {
       this->input_pin_->pin_mode(gpio::FLAG_INPUT);
       this->output_pin_->pin_mode(gpio::FLAG_OUTPUT);
     }
-    
+
     ESP_LOGD(TAG, "Set split_io to %d", static_cast<int>(split_io));
   }
 }
