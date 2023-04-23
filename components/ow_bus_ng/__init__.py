@@ -1,11 +1,10 @@
 import voluptuous as vol
-
-# from voluptuous.schema import Required
 import logging
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import pins
 from esphome.const import CONF_ID, CONF_PIN
+from voluptuous import Required, Optional
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -19,8 +18,8 @@ ESPHomeOneWireNGComponent = ow_bus_ng_ns.class_(
 
 pin_schema = vol.Schema(
     {
-        Required("input_pin"): pins.gpio_input_pin_schema,
-        Required("output_pin"): pins.gpio_output_pin_schema,
+        vol.Required("input_pin"): pins.gpio_input_pin_schema,
+        vol.Required("output_pin"): pins.gpio_output_pin_schema,
     }
 )
 
