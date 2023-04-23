@@ -1,4 +1,5 @@
 import logging
+
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import pins
@@ -14,33 +15,33 @@ ESPHomeOneWireNGComponent = ow_bus_ng_ns.class_(
     "ESPHomeOneWireNGComponent", cg.Component
 )
 
+pin_schema = Schema({
+    Required('input_pin'): pins.gpio_input_pin_schema,
+    Required('output_pin'): pins.gpio_output_pin_schema 
+})
+
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(ESPHomeOneWireNGComponent),
-        cv.Required(CONF_PIN): pins.gpio_input_pin_schema.extend(
-            {
-                "type": "multi_pin",
-                "pins": {
-                    "input_pin": pins.gpio_input_pin_schema,
-                    "output_pin": pins.gpio_output_pin_schema,
-                },
-            }
-        ),
+        cv.Required(CONF_PIN): cv.any([
+            pins.gpio_input_pin_schema, 
+            pin_schema
+        ])
     }
 )
 
-
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID], ESPHomeOneWireNGComponent())
-
-    if isinstance(config[CONF_PIN], str):
-        # Single pin mode
-        pin = await cg.gpio_pin_expression(config[CONF_PIN])
-        cg.add(var.set_single_pin(pin))
-    elif isinstance(config[CONF_PIN], dict):
+    
+    conf_pin = config[CONF_PIN]
+    if isinstance(conf_pin, dict):
         # Split IO mode
-        in_pin = await cg.gpio_pin_expression(config[CONF_PIN]["input_pin"])
-        out_pin = await cg.gpio_pin_expression(config[CONF_PIN]["output_pin"])
+        in_pin = await cg.gpio_pin_expression(conf_pin['input_pin'])
+        out_pin = await cg.gpio_pin_expression(conf_pin['output_pin'])
         cg.add(var.set_split_io(in_pin, out_pin))
-
+    else:
+        # Single pin mode
+        pin = await cg.gpio_pin_expression(conf_pin)
+        cg.add(var.set_single_pin(pin))
+    
     await cg.register_component(var, config)
