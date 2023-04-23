@@ -45,6 +45,7 @@
 #include "esphome/core/hal.h"
 #include "esphome/core/component.h"
 #include <vector>
+#include <cstdstring>
 
 namespace esphome {
 namespace ow_bus_ng {
@@ -69,6 +70,7 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
   InternalGPIOPin *input_pin_{nullptr};
   InternalGPIOPin *output_pin_{nullptr};
   OneWirePinConfig pin_config_;
+};
 
 }  // namespace ow_bus_ng
 }  // namespace esphome
