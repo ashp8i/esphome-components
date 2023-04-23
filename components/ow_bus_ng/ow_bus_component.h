@@ -59,6 +59,8 @@ class ESPHomeOneWireNGComponent : public Component {
       : input_pin_(input_pin), output_pin_(output_pin), pin_config_(OneWirePinConfig::SPLIT_IO) {}
 
   enum OneWirePinConfig { SINGLE_PIN, SPLIT_IO };
+  void set_single_pin(InternalGPIOPin *pin);
+  void set_split_io(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin);
 
  protected:
   InternalGPIOPin *pin_{nullptr};
