@@ -29,3 +29,19 @@ CONFIG_SCHEMA = cv.Schema(
         ])
     }
 )
+
+async def to_code(config):
+    var = cg.new_Pvariable(config[CONF_ID], ESPHomeOneWireNGComponent())
+    
+    conf_pin = config[CONF_PIN]
+    if isinstance(conf_pin, dict):
+        # Split IO mode
+        input_pin = await cg.gpio_pin_expression(conf_pin['input_pin'])
+        output_pin = await cg.gpio_pin_expression(conf_pin['output_pin'])
+        cg.add(var.set_split_io(input_pin, output_pin))
+    else:
+        # Single pin mode
+        pin = await cg.gpio_pin_expression(conf_pin)
+        cg.add(var.set_single_pin(pin))
+    
+    await cg.register_component(var, config)
