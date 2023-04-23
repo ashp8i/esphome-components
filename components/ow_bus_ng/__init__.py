@@ -1,4 +1,5 @@
 import voluptuous as vol
+from voluptuous.schema import Required
 import logging
 import esphome.codegen as cg
 import esphome.config_validation as cv
@@ -36,12 +37,12 @@ async def to_code(config):
     conf_pin = config[CONF_PIN]
     if isinstance(conf_pin, dict):
         # Split IO mode
-        input_pin = await cg.gpio_pin_expression(conf_pin['input_pin'])
-        output_pin = await cg.gpio_pin_expression(conf_pin['output_pin'])
-        cg.add(var.set_split_io(input_pin, output_pin))
+        in_pin = await cg.gpio_pin_expression(conf_pin['input_pin'])
+        out_pin = await cg.gpio_pin_expression(conf_pin['output_pin'])
+        cg.add(var.set_split_io(in_pin, out_pin))
     else:
         # Single pin mode
         pin = await cg.gpio_pin_expression(conf_pin)
         cg.add(var.set_single_pin(pin))
     
-    await cg.register_component(var, config)
+    await cg.register_component(var, config)        
