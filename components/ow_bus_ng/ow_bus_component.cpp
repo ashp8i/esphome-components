@@ -5,7 +5,7 @@
 namespace esphome {
 namespace ow_bus_ng {
 
-static const char *TAG = "owbus.ng";  
+static const char *const TAG = "owbus.ng";  
 
 void ESPHomeOneWireNGComponent::setup() {       
   ESP_LOGCONFIG(TAG, "Setting up ESPHomeOneWireNGComponent...");   
