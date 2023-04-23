@@ -26,7 +26,10 @@ pin_schema = vol.Schema(
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(ESPHomeOneWireNGComponent),
-        cv.Required(CONF_PIN): vol.Any([pins.gpio_input_pin_schema, pin_schema]),
+        cv.Required(CONF_PIN): vol.Any(
+            [pins.gpio_input_pin_schema, pin_schema],
+            msg="The 'pin' option is required (as marked Required in the config schema) for ow_bus_ng component instance ${instance_number}. Please provide a GPIO pin number or pin object with 'input_pin' and 'output_pin'.",
+        ),
     }
 )
 
