@@ -45,7 +45,7 @@
 #include "esphome/core/hal.h"
 #include "esphome/core/component.h"
 #include <vector>
-#include <cstdstring>
+// #include <cstdstring>
 
 namespace esphome {
 namespace ow_bus_ng {
