@@ -113,10 +113,10 @@ namespace ow_bus_ng {
 static const char *const TAG = "owbus.ng";
 
 void ESPHomeOneWireNGComponent::set_single_pin(esphome::InternalGPIOPin *pin) {
-  this->pin_ = pin;  // Save the single pin
+  this->pin_ = pin;  // Save the single pin 
 }
 
-void ESPHomeOneWireNGComponent::set_split_io(esphome::InternalGPIOPin *input_pin,
+void ESPHomeOneWireNGComponent::set_split_io(esphome::InternalGPIOPin *input_pin,  
                                              esphome::InternalGPIOPin *output_pin) {
   this->input_pin_ = input_pin;  // Save the split IO pins
   this->output_pin_ = output_pin;

@@ -49,25 +49,26 @@
 namespace esphome {
 namespace ow_bus_ng {
 
-class ESPHomeOneWireNGComponent : public Component {
+class ESPHomeOneWireNGComponent : public esphome::Component {
  public:
-  ESPHomeOneWireNGComponent() : pin_config_(OneWirePinConfig::SINGLE_PIN) {}
+  ESPHomeOneWireNGComponent() : pin_config_(OneWirePinConfig::SINGLE_PIN) {}  
 
-  ESPHomeOneWireNGComponent(InternalGPIOPin *pin) : pin_(pin), pin_config_(OneWirePinConfig::SINGLE_PIN) {}
-
-  ESPHomeOneWireNGComponent(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin)
-      : input_pin_(input_pin), output_pin_(output_pin), pin_config_(OneWirePinConfig::SPLIT_IO) {}
-
+  ESPHomeOneWireNGComponent(esphome::InternalGPIOPin *pin) : pin_(pin), pin_config_(OneWirePinConfig::SINGLE_PIN) {}  
+  
+  ESPHomeOneWireNGComponent(esphome::InternalGPIOPin *input_pin, esphome::InternalGPIOPin *output_pin)  
+       : input_pin_(input_pin), output_pin_(output_pin), pin_config_(OneWirePinConfig::SPLIT_IO) 
+        
+  void setup() override;  
+  void dump_config() override;
   enum OneWirePinConfig { SINGLE_PIN, SPLIT_IO };
-  void set_single_pin(InternalGPIOPin *pin);
-  void set_split_io(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin);
+  void set_single_pin(esphome::InternalGPIOPin *pin);
+  void set_split_io(esphome::InternalGPIOPin *input_pin, esphome::InternalGPIOPin *output_pin);
 
  protected:
   InternalGPIOPin *pin_{nullptr};
   InternalGPIOPin *input_pin_{nullptr};
   InternalGPIOPin *output_pin_{nullptr};
   OneWirePinConfig pin_config_;
-};
 
 }  // namespace ow_bus_ng
 }  // namespace esphome
