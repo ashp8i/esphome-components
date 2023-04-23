@@ -105,8 +105,9 @@
 
 #pragma once
 
-#include "esphome/core/component.h"
-#include "esphome/components/gpio/gpio.h"
+#include "ow_bus_component.h"
+#include "esphome/core/log.h"
+#include "esphome/core/helpers.h"
 
 namespace esphome {
 namespace ow_bus_ng {
