@@ -7,13 +7,13 @@ namespace ow_bus_ng {
 
 static const char *const TAG = "owbus.ng";
 
-void ESPHomeOneWireNGComponent::set_single_pin(InternalGPIOPin *pin) {
-  this->pin_ = pin;  // Save the single pin
+void ESPHomeOneWireNGComponent::set_single_pin(InputPin *pin) {
+  this->pin_ = pin;  // InputPin resolves to InternalGPIOPin
 }
 
-void ESPHomeOneWireNGComponent::set_split_io(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin) {
-  this->input_pin_ = input_pin;  // Save the split IO pins
-  this->output_pin_ = output_pin;
+void ESPHomeOneWireNGComponent::set_split_io(OutputPin *tx_pin, InputPin *rx_pin) {
+  this->input_pin_ = rx_pin;
+  this->output_pin_ = tx_pin;
 }
 
 // Constructor definitions here

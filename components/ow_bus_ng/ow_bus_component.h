@@ -3,10 +3,12 @@
 #include "esphome/core/hal.h"
 #include "esphome/core/component.h"
 #include <vector>
-// #include <cstdstring>
 
 namespace esphome {
 namespace ow_bus_ng {
+
+using InputPin = InternalGPIOPin;
+using OutputPin = InternalGPIOPin;
 
 class ESPHomeOneWireNGComponent : public esphome::Component {
  public:
@@ -14,12 +16,14 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
 
   ESPHomeOneWireNGComponent(InternalGPIOPin *pin);
 
+  ESPHomeOneWireNGComponent(InputPin *input_pin, OutputPin *output_pin);
+
   void setup() override;
 
   void dump_config() override;
   enum OneWirePinConfig { SINGLE_PIN, SPLIT_IO };
-  void set_single_pin(InternalGPIOPin *pin);
-  void set_split_io(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin);
+  void set_single_pin(InputPin *pin);
+  void set_split_io(OutputPin *tx_pin, InputPin *rx_pin);
 
  protected:
   InternalGPIOPin *pin_{nullptr};
