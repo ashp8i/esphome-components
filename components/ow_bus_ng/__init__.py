@@ -40,23 +40,20 @@ CONFIG_SCHEMA = cv.Schema(
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID], ESPHomeOneWireNGComponent())
 
-    if "mode" in config:
-        mode = config["mode"]
-    else:
-        mode = "bitbang_single"
-
     if "input_pin" in config and "output_pin" in config:
         in_pin = await cg.gpio_pin_expression(config["input_pin"])
         out_pin = await cg.gpio_pin_expression(config["output_pin"])
+        mode = config.get("mode", "bitbang_single")
         if mode == "bitbang_split_io":
             cg.add(var.set_split_io(in_pin, out_pin))
         else:
             _LOGGER.error("Invalid mode for split I/O pins: %s", mode)
             return
 
-    else:
+    else:  
         # Single pin mode
         pin = await cg.gpio_pin_expression(config["pin"])
+        mode = config.get("mode", "bitbang_single")
         if mode == "bitbang_single":
             cg.add(var.set_single_pin(pin))
         elif mode == "modbus_half_duplex":
