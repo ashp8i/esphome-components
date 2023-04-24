@@ -10,9 +10,9 @@ namespace ow_bus_ng {
 
 class ESPHomeOneWireNGComponent : public esphome::Component {
  public:
-  ESPHomeOneWireNGComponent() : pin_config_(OneWirePinConfig::SINGLE_PIN) {}
+  ESPHomeOneWireNGComponent();
 
-  ESPHomeOneWireNGComponent(InternalGPIOPin *pin) : pin_(pin), pin_config_(OneWirePinConfig::SINGLE_PIN) {}
+  ESPHomeOneWireNGComponent(InternalGPIOPin *pin);
 
   void setup() override;
 
