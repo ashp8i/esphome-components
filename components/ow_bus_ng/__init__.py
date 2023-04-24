@@ -19,19 +19,16 @@ ESPHomeOneWireNGComponent = ow_bus_ng_ns.class_(
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(ESPHomeOneWireNGComponent),
-        cv.Optional("pin"): pins.gpio_input_pin_schema,
-        cv.Optional("input_pin"): pins.gpio_input_pin_schema,
-        cv.Optional("output_pin"): pins.gpio_output_pin_schema,
-        cv.Optional("mode", default="bitbang_single"): vol.All(
-            vol.Lower,
-            vol.In(
-                [
-                    "BITBANG_SINGLE",
-                    "BITBANG_SPLIT_IO",
-                    "MODBUS_HALF_DUPLEX",
-                    "UART_FULL_DUPLEX",
-                ]
-            ),
+        vol.Optional(CONF_PIN): pins.gpio_input_pin_schema,
+        vol.Optional("input_pin"): pins.gpio_input_pin_schema,
+        vol.Optional("output_pin"): pins.gpio_output_pin_schema,
+        vol.Optional("mode", default="bitbang_single"): vol.In(
+            [
+                "bitbang_single",
+                "bitbang_split_io",
+                "modbus_half_duplex",
+                "uart_full_duplex",
+            ]
         ),
     }
 )
