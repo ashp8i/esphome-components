@@ -57,10 +57,13 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
   ESPHomeOneWireNGComponent(esphome::InternalGPIOPin *pin) : pin_(pin), pin_config_(OneWirePinConfig::SINGLE_PIN) {}  
   
   ESPHomeOneWireNGComponent(esphome::InternalGPIOPin *input_pin, esphome::InternalGPIOPin *output_pin)  
-       : input_pin_(input_pin), output_pin_(output_pin), pin_config_(OneWirePinConfig::SPLIT_IO) 
+       : input_pin_(input_pin), output_pin_(output_pin), pin_config_(OneWirePinConfig::SPLIT_IO) {}
         
-  void setup() override;  
-  void dump_config() override;
+  void setup() override {  
+  }  
+
+  void dump_config() override {
+  }
   enum OneWirePinConfig { SINGLE_PIN, SPLIT_IO };
   void set_single_pin(esphome::InternalGPIOPin *pin);
   void set_split_io(esphome::InternalGPIOPin *input_pin, esphome::InternalGPIOPin *output_pin);
@@ -72,5 +75,5 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
   OneWirePinConfig pin_config_;
 };
 
-}  // namespace ow_bus_ng
-}  // namespace esphome
+};  // namespace ow_bus_ng
+};  // namespace esphome

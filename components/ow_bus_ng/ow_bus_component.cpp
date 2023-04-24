@@ -112,12 +112,12 @@ namespace ow_bus_ng {
 
 static const char *const TAG = "owbus.ng";
 
-void ESPHomeOneWireNGComponent::set_single_pin(esphome::InternalGPIOPin *pin) {
+void ESPHomeOneWireNGComponent::set_single_pin(InternalGPIOPin *pin) {
   this->pin_ = pin;  // Save the single pin 
 }
 
-void ESPHomeOneWireNGComponent::set_split_io(esphome::InternalGPIOPin *input_pin,  
-                                             esphome::InternalGPIOPin *output_pin) {
+void ESPHomeOneWireNGComponent::set_split_io(InternalGPIOPin *input_pin,  
+                                             InternalGPIOPin *output_pin) {
   this->input_pin_ = input_pin;  // Save the split IO pins
   this->output_pin_ = output_pin;
 }
@@ -130,7 +130,7 @@ ESPHomeOneWireNGComponent(InternalGPIOPin *pin) : Component(), pin_(pin), pin_co
 ESPHomeOneWireNGComponent(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin)
     : Component(), input_pin_(input_pin), output_pin_(output_pin), pin_config_(OneWirePinConfig::SPLIT_IO) {}
 
-void ESPHomeOneWireNGComponent::setup() {
+void ESPHomeOneWireNGComponent::setup() override {
   Component::setup();  // Call parent class setup()
 
   ESP_LOGCONFIG(TAG, "Setting up ESPHomeOneWireNGComponent...");
@@ -151,7 +151,7 @@ void ESPHomeOneWireNGComponent::setup() {
   // ...
 }
 
-void ESPHomeOneWireNGComponent::dump_config() {
+void ESPHomeOneWireNGComponent::dump_config() override {
   ESP_LOGCONFIG(TAG, "Configuration:");
 
   switch (this->pin_config_) {
