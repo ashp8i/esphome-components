@@ -4,7 +4,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import pins
 from esphome.const import CONF_ID, CONF_PIN
-from voluptuous import Required, Optional, Any
+from voluptuous import Required, Optional, Any, All, Lower, In
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ async def to_code(config):
             _LOGGER.error("Invalid mode for split I/O pins: %s", mode)
             return
 
-    else:  
+    else:
         # Single pin mode
         pin = await cg.gpio_pin_expression(config["pin"])
         mode = config.get("mode", "bitbang_single")
