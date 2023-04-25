@@ -24,12 +24,6 @@ void ESPHomeOneWireNGComponent::set_bitbang_split_io(InternalGPIOPin *input_pin,
 //   this->setup_methods_.push_back(ONEWIRE_SETUP_UART_HALF_DUPLEX);
 // }
 
-void ESPHomeOneWireNGComponent::set_modbus_half_duplex(ModbusComponent *modbus, GPIOPin *tx_pin) {
-  this->modbus_ = modbus;
-  this->tx_pin_ = tx_pin;
-  this->setup_methods_.push_back(ONEWIRE_SETUP_MODBUS_HALF_DUPLEX);
-}
-
 void ESPHomeOneWireNGComponent::set_uart_full_duplex(UARTComponent *uart, GPIOPin *rx_pin, GPIOPin *tx_pin) {
   this->uart_ = uart;
   this->rx_pin_ = rx_pin;
@@ -53,25 +47,38 @@ void ESPHomeOneWireNGComponent::setup() {
       case ONEWIRE_SETUP_BITBANG_SINGLE_PIN:
         if (this->pin_ != nullptr) {
           this->pin_->setup();
+          pin_->pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLUP);
+          delayMicroseconds(480);
+          // Release the bus/pin
+          delayMicroseconds(70);
         }
         break;
       case ONEWIRE_SETUP_BITBANG_SPLIT_IO:
         if (this->input_pin_ != nullptr && this->output_pin_ != nullptr) {
           this->input_pin_->setup();
           this->output_pin_->setup();
+          output_pin_->pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLUP);
+          delayMicroseconds(480);
+          // Release the bus/pin
+          delayMicroseconds(70);
         }
         break;
-      case ONEWIRE_SETUP_MODBUS_HALF_DUPLEX:
-        if (this->modbus_ != nullptr && this->tx_pin_ != nullptr) {
-          this->modbus_->setup();
-          this->tx_pin_->setup();
-        }
-        break;
+      // case ONEWIRE_SETUP_UART_HALF_DUPLEX:
+      //   if (this->uart_ != nullptr && this->tx_pin_ != nullptr) {
+      //     this->modbus_->setup();
+      //     this->tx_pin_->setup();
+      //   }
+      //   break;
       case ONEWIRE_SETUP_UART_FULL_DUPLEX:
         if (this->uart_ != nullptr && this->rx_pin_ != nullptr && this->tx_pin_ != nullptr) {
           this->uart_->setup();
           this->rx_pin_->setup();
           this->tx_pin_->setup();
+          // Pull the bus/pin low using the UART component
+          uart_->transmit_break();
+          delayMicroseconds(480);
+          // Release the bus/pin
+          delayMicroseconds(70);
         }
         break;
     }
@@ -99,18 +106,18 @@ void ESPHomeOneWireNGComponent::dump_config() {
           ESP_LOGCONFIG(TAG, "  output_pin: %d", this->output_pin_->get_pin());
         }
         break;
+      // case ONEWIRE_SETUP_UART_HALF_DUPLEX:
+      //   ESP_LOGCONFIG(TAG, "  uart_half_duplex");
+      //   if (this->modbus_ != nullptr && this->tx_pin_ != nullptr) {
+      //     ESP_LOGCONFIG(TAG, "  uart: %s", this->uart_->get_name().c_str());
+      //     ESP_LOGCONFIG(TAG, "  tx_pin: %d", this->tx_pin_->get_pin());
+      //   }
+      //   break;
       case ONEWIRE_SETUP_UART_FULL_DUPLEX:
         ESP_LOGCONFIG(TAG, "  uart_full_duplex");
         if (this->uart_ != nullptr && this->rx_pin_ != nullptr && this->tx_pin_ != nullptr) {
           ESP_LOGCONFIG(TAG, "  uart: %s", this->uart_->get_name().c_str());
           ESP_LOGCONFIG(TAG, "  rx_pin: %d", this->rx_pin_->get_pin());
-          ESP_LOGCONFIG(TAG, "  tx_pin: %d", this->tx_pin_->get_pin());
-        }
-        break;
-      case ONEWIRE_SETUP_MODBUS_HALF_DUPLEX:
-        ESP_LOGCONFIG(TAG, "  modbus_half_duplex");
-        if (this->modbus_ != nullptr && this->tx_pin_ != nullptr) {
-          ESP_LOGCONFIG(TAG, "  modbus: %s", this->modbus_->get_name().c_str());
           ESP_LOGCONFIG(TAG, "  tx_pin: %d", this->tx_pin_->get_pin());
         }
         break;

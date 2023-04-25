@@ -26,7 +26,7 @@ CONFIG_SCHEMA = cv.Schema(
             [
                 "bitbang_single",
                 "bitbang_split_io",
-                "modbus_half_duplex",
+                # "uart_half_duplex",
                 "uart_full_duplex",
             ]
         ),
@@ -53,8 +53,8 @@ async def to_code(config):
         mode = config.get("mode", "bitbang_single")
         if mode == "bitbang_single":
             cg.add(var.set_single_pin(pin))
-        elif mode == "modbus_half_duplex":
-            cg.add(var.set_modbus_half_duplex(pin))
+        # elif mode == "uart_half_duplex":
+        #     cg.add(var.set_uart_half_duplex(pin))
         elif mode == "uart_full_duplex":
             cg.add(var.set_uart_full_duplex(pin))
         else:

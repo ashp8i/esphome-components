@@ -16,7 +16,6 @@ enum OneWireSetupMethod {
   ONEWIRE_SETUP_BITBANG_SINGLE_PIN,
   ONEWIRE_SETUP_BITBANG_SPLIT_IO,
   //  ONEWIRE_SETUP_HARDWARE_UART_HALF_DUPLEX, // No such thing, not supported by UART Component
-  ONEWIRE_SETUP_MODBUS_HALF_DUPLEX,
   ONEWIRE_SETUP_UART_FULL_DUPLEX,
 };
 
@@ -30,9 +29,7 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
 
   ESPHomeOneWireNGComponent(InputPin *input_pin, OutputPin *output_pin);
 
-  // ESPHomeOneWireNGComponent(UARTComponent *uart, GPIOPin *tx_pin);
-
-  ESPHomeOneWireNGComponent(ModbusComponent *modbus, GPIOPin *tx_pin);
+  // ESPHomeOneWireNGComponent(UARTComponent *uart, GPIOPin *tx_pin); // not yet supported, or ever
 
   ESPHomeOneWireNGComponent(UARTComponent *uart, GPIOPin *rx_pin, GPIOPin *tx_pin);
 
@@ -44,8 +41,6 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
 
   void set_uart_full_duplex(UARTComponent *uart, GPIOPin *rx_pin, GPIOPin *tx_pin);
 
-  void set_modbus_half_duplex(ModbusComponent *modbus, GPIOPin *tx_pin);
-
   void setup() override;
   void dump_config() override;
 
@@ -56,7 +51,6 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
   UARTComponent *uart_{nullptr};
   GPIOPin *rx_pin_{nullptr};
   GPIOPin *tx_pin_{nullptr};
-  ModbusComponent *modbus_{nullptr};
   std::vector<OneWireSetupMethod> setup_methods_;
 };
 
