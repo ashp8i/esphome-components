@@ -3,7 +3,7 @@ import logging
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import pins
-import esphome.components.uart
+from esphome.components import uart
 from esphome.const import CONF_ID, CONF_PIN
 
 # from voluptuous import Required, Optional, Any, All, Lower, In
