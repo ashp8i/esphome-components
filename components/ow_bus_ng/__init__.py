@@ -17,7 +17,7 @@ MULTI_CONF = True
 
 ow_bus_ng_ns = cg.esphome_ns.namespace("ow_bus_ng")
 ESPHomeOneWireNGComponent = ow_bus_ng_ns.class_(
-    "ESPHomeOneWireNGComponent", cg.Component, uart.UARTDevice
+    "ESPHomeOneWireNGComponent", cg.Component
 )
 
 CONFIG_SCHEMA = cv.Schema(
