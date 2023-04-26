@@ -33,35 +33,45 @@ CONFIG_SCHEMA = cv.Schema(
                 "uart_full_duplex",
             ]
         ),
-        vol.Optional("uart"): uart.UART_DEVICE_SCHEMA
+        vol.Optional("uart"): uart.UART_DEVICE_SCHEMA,
     }
 )
+
+
+async def setup_bitbang_single(var, config):
+    pin = await cg.gpio_pin_expression(config["pin"])
+    cg.add(var.set_single_pin(pin))
+
+
+async def setup_bitbang_split_io(var, config):
+    in_pin = await cg.gpio_pin_expression(config["input_pin"])
+    out_pin = await cg.gpio_pin_expression(config["output_pin"])
+    cg.add(var.set_split_io(in_pin, out_pin))
+
+
+async def setup_uart_full_duplex(var, config):
+    await uart.register_uart_device(var, config["uart"])
+    uart_conf = config["uart"]
+    cg.add(
+        var.set_uart(uart_conf["tx_pin"], uart_conf["rx_pin"], uart_conf["baud_rate"])
+    )
+
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID], ESPHomeOneWireNGComponent())
 
     if "uart" in config:
-      await uart.register_uart_device(var, config["uart"])
-      uart_conf = config["uart"]
-      cg.add(var.set_uart(uart_conf["tx_pin"], uart_conf["rx_pin"], uart_conf["baud_rate"]))
+        await setup_uart_full_duplex(var, config)
     else:
-      mode = config.get("mode", "bitbang_single")
-      if mode == "bitbang_single":
-        # Existing logic
-      elif mode == "bitbang_split_io":
-        in_pin = await cg.gpio_pin_expression(config["input_pin"])
-        out_pin = await cg.gpio_pin_expression(config["output_pin"])
-        cg.add(var.set_split_io(in_pin, out_pin))
-      elif mode == "uart_full_duplex":
-        if "uart" not in config:
-          _LOGGER.error("UART mode selected but uart: config not provided!")
+        mode = config.get("mode", "bitbang_single")
+        if mode == "bitbang_single":
+            await setup_bitbang_single(var, config)
+        elif mode == "bitbang_split_io":
+            await setup_bitbang_split_io(var, config)
+        elif mode == "uart_full_duplex":
+            await setup_uart_full_duplex(var, config)
         else:
-          await uart.register_uart_device(var, config["uart"])
-          uart_conf = config["uart"]
-          cg.add(var.set_uart(uart_conf["tx_pin"], uart_conf["rx_pin"], uart_conf["baud_rate"]))
-      else:
-        pin = await cg.gpio_pin_expression(config["pin"])
-        _LOGGER.error("Invalid mode for single pin: %s", mode)
-        return
+            _LOGGER.error("Invalid mode for single pin: %s", mode)
+            return
 
     await cg.register_component(var, config)
