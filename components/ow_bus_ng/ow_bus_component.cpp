@@ -19,8 +19,8 @@ void ESPHomeOneWireNGComponent::setup() {
   if (this->uart_ != nullptr) {
     if (!perform_reset())
       return;  // No device present
-    uart_bus_ = new ESPHomeOneWireNGComponent(uart);
-    uart_bus_->begin();
+    // uart_bus_ = new ESPHomeOneWireNGComponent(uart);
+    // uart_bus_->begin();
   }
 }
 
@@ -31,8 +31,8 @@ void ESPHomeOneWireNGComponent::dump_config() {
 
 bool ESPHomeOneWireNGComponent::perform_reset() {
   if (this->uart_ != nullptr) {
-    this->uart_->transmit_break();
-    while (this->uart_->peek() == 0) { /* wait */ }
+    this->uart_->transmitBreak();
+    while (this->uart_->peekUint8() == 0) { /* wait */ }
   }
   return true;
 }
