@@ -2,6 +2,8 @@
 
 #include "esphome/core/hal.h"
 #include "esphome/core/component.h"
+// #include "esphome/core/defines.h"
+// #include "esphome/core/helpers.h"
 #include "esphome/components/uart/uart.h"
 #include <vector>
 
@@ -30,7 +32,7 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
 
   // ESPHomeOneWireNGComponent(UARTComponent *uart, GPIOPin *tx_pin); // not yet supported, or ever
 
-  ESPHomeOneWireNGComponent(UARTComponent *uart, GPIOPin *rx_pin, GPIOPin *tx_pin);
+  ESPHomeOneWireNGComponent(UARTComponent *uart);
 
   void set_bitbang_single_pin(InternalGPIOPin *pin);
 
@@ -38,7 +40,7 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
 
   // void set_uart_half_duplex(UARTComponent *uart, GPIOPin *tx_pin);
 
-  void set_uart_full_duplex(UARTComponent *uart, GPIOPin *rx_pin, GPIOPin *tx_pin);
+  void set_uart_full_duplex(UARTComponent *uart);
 
   void setup() override;
   void dump_config() override;
@@ -48,8 +50,6 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
   InternalGPIOPin *input_pin_{nullptr};
   InternalGPIOPin *output_pin_{nullptr};
   UARTComponent *uart_{nullptr};
-  GPIOPin *rx_pin_{nullptr};
-  GPIOPin *tx_pin_{nullptr};
   std::vector<OneWireSetupMethod> setup_methods_;
 };
 

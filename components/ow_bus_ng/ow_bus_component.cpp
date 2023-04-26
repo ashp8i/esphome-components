@@ -1,6 +1,7 @@
 #include "ow_bus_component.h"
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
+#include "esphome/core/gpio.h"
 
 namespace esphome {
 namespace ow_bus_ng {
@@ -24,11 +25,9 @@ void ESPHomeOneWireNGComponent::set_bitbang_split_io(InternalGPIOPin *input_pin,
 //   this->setup_methods_.push_back(ONEWIRE_SETUP_UART_HALF_DUPLEX);
 // }
 
-void ESPHomeOneWireNGComponent::set_uart_full_duplex(UARTComponent *uart, GPIOPin *rx_pin, GPIOPin *tx_pin) {
+void ESPHomeOneWireNGComponent::set_uart_bus(UARTComponent *uart) {
   this->uart_ = uart;
-  this->rx_pin_ = rx_pin;
-  this->tx_pin_ = tx_pin;
-  this->setup_methods_.push_back(ONEWIRE_SETUP_UART_FULL_DUPLEX);
+  this->setup_methods_.push_back(ONEWIRE_SETUP_UART);
 }
 
 // Constructor definitions here
@@ -36,6 +35,9 @@ ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent() : pin_config_(OneWirePinC
 
 ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InternalGPIOPin *pin)
     : pin_(pin), pin_config_(OneWirePinConfig::SINGLE_PIN) {}
+
+ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(UARTComponent *uart)
+    : uart_(uart), pin_config_(OneWirePinConfig::UART) {}
 
 void ESPHomeOneWireNGComponent::setup() {
   Component::setup();  // Call parent class setup()
@@ -70,10 +72,8 @@ void ESPHomeOneWireNGComponent::setup() {
       //   }
       //   break;
       case ONEWIRE_SETUP_UART_FULL_DUPLEX:
-        if (this->uart_ != nullptr && this->rx_pin_ != nullptr && this->tx_pin_ != nullptr) {
-          this->uart_->setup();
-          this->rx_pin_->setup();
-          this->tx_pin_->setup();
+        if (this->uart_ != nullptr) {
+          uart_->setup();  // Setup the UART component
           // Pull the bus/pin low using the UART component
           uart_->transmit_break();
           delayMicroseconds(480);
