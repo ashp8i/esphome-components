@@ -26,17 +26,18 @@ void ESPHomeOneWireNGComponent::setup() {
 
 void ESPHomeOneWireNGComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "  Using UART mode:");
-  ESP_LOGCONFIG(TAG, "    UART bus: %s", this->uart_->get_name().c_str());
+  // ESP_LOGCONFIG(TAG, "    UART bus: %s", this->uart_->get_name().c_str());
+  ESP_LOGCONFIG(TAG, "    UART bus: %s", this->uart_->getID().c_str());
 }
 
-bool ESPHomeOneWireNGComponent::perform_reset() {
-  if (this->uart_ != nullptr) {
-    this->uart_->enable_tx_pin();
-    this->uart_->set_tx_pin_level(false);
-    delay(30);
-    this->uart_->disable_tx_pin();
-  }
-  return true;
+void ESPHomeOneWireNGComponent::perform_reset() {
+  uart_->pause();  // Temporarily pause UART component
+
+  tx_pin_->set_level(false);
+  delay(30);
+  tx_pin_->set_level(true);
+
+  uart_->resume();  // Resume UART component
 }
 
 }  // namespace ow_bus_ng
