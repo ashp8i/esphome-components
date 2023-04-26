@@ -90,7 +90,7 @@ async def setup_uart_full_duplex(var, config):
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID], ESPHomeOneWireNGComponent())
-    mode = config["conf_mode"]
+    mode = config["mode"]
     if mode == "BITBANG_SINGLE":
         cg.add_define("USE_BITBANG_SINGLE")
     elif mode == "BITBANG_SPLIT_IO":
