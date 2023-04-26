@@ -11,9 +11,17 @@ static const char *const TAG = "owbus.ng";
 // Constructor definitions here
 ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent() {}
 
+// ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InternalGPIOPin *pin) {
+//   this->pin_ = pin;
+//   // Set bitbang single pin mode
+// }
+
 ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InternalGPIOPin *pin) {
+  if (pin->get_pin_mode() != OUTPUT_OPEN_DRAIN) {
+    ESP_LOGE(TAG, "1-Wire pin %d must be in open-drain mode!", pin->get_pin());
+    return;
+  }
   this->pin_ = pin;
-  // Set bitbang single pin mode
 }
 
 ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InputPin *input_pin, OutputPin *output_pin) {
@@ -48,10 +56,6 @@ void ESPHomeOneWireNGComponent::setup() {
     uart_bus_->begin();
   }
 }
-
-  // if (this->uart_ != nullptr) this->uart_->begin();     // Initialize UART
-
-  // if (!perform_reset()) return;  // Check for any connected devices
 
 void ESPHomeOneWireNGComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "ESPHomeOneWireNGComponent:");
@@ -90,10 +94,6 @@ bool ESPHomeOneWireNGComponent::perform_reset() {
     while (this->uart_->peek() == 0) { /* wait */ }
     return true;                       // Presence pulse detected!
   }
-
-  return false;
-}
-
   // For UART just call uart_->transmit_break()
   return false;  // If no pin defined
 }
