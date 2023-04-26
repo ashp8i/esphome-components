@@ -30,7 +30,7 @@ void ESPHomeOneWireNGComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "    UART bus: %s", this->uart_->getID().c_str());
 }
 
-void ESPHomeOneWireNGComponent::perform_reset() {
+bool ESPHomeOneWireNGComponent::perform_reset() {
   uart_->pause();  // Temporarily pause UART component
 
   tx_pin_->set_level(false);
