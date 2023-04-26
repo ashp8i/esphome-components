@@ -27,6 +27,7 @@ class ESPHomeOneWireNGComponent : public Component {
   ESPHomeOneWireNGComponent(uart::UARTComponent *uart);
 
   void setup() override;
+  void dump_config() override;
   bool perform_reset();
 
  protected:
