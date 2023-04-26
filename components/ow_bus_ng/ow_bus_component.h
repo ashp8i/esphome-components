@@ -3,7 +3,6 @@
 #include "esphome/core/hal.h"
 #include "esphome/core/component.h"
 #include "esphome/components/uart/uart.h"
-#include "esphome/components/modbus/modbus_component.h"
 #include <vector>
 
 namespace esphome {
