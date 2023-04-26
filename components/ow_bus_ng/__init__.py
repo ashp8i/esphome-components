@@ -57,10 +57,10 @@ async def to_code(config):
       elif mode == "uart_full_duplex":
         if "uart" not in config:
           _LOGGER.error("UART mode selected but uart: config not provided!")
-          return
-        await uart.register_uart_device(var, config["uart"])
-        uart_conf = config["uart"]
-        cg.add(var.set_uart(uart_conf["tx_pin"], uart_conf["rx_pin"], uart_conf["baud_rate"]))
+        else:
+          await uart.register_uart_device(var, config["uart"])
+          uart_conf = config["uart"]
+          cg.add(var.set_uart(uart_conf["tx_pin"], uart_conf["rx_pin"], uart_conf["baud_rate"]))
       else:
         pin = await cg.gpio_pin_expression(config["pin"])
         _LOGGER.error("Invalid mode for single pin: %s", mode)
