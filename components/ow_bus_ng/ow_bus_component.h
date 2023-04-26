@@ -26,8 +26,6 @@ class ESPHomeOneWireNGComponent : public Component {
 
   ESPHomeOneWireNGComponent(uart::UARTComponent *uart);
 
-  uart::UARTComponent *uart_{nullptr};
-
   void setup() override;
   bool perform_reset();
 
@@ -35,7 +33,7 @@ class ESPHomeOneWireNGComponent : public Component {
   // InternalGPIOPin *pin_{nullptr};
   // InputPin *input_pin_{nullptr};
   // OutputPin *output_pin_{nullptr};
-  UARTComponent *uart_{nullptr};
+  uart::UARTComponent *uart_{nullptr};
   // ESPHomeOneWireNGComponent *single_pin_bus_;  // Single pin mode
   // ESPHomeOneWireNGComponent *split_io_bus_;    // Split IO mode
   ESPHomeOneWireNGComponent *uart_bus_;  // UART mode
