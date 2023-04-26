@@ -25,14 +25,6 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
 
   ESPHomeOneWireNGComponent(UARTComponent *uart);
 
-  // void set_bitbang_single_pin(InternalGPIOPin *pin);
-
-  // void set_bitbang_split_io(InputPin *input_pin, OutputPin *output_pin);
-
-  // void set_uart_single_pin(UARTComponent *uart, GPIOPin *tx_pin);
-
-  // void set_uart_bus(UARTComponent *uart);
-
   void setup() override;
   bool perform_reset();
 

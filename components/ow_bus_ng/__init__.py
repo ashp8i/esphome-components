@@ -17,13 +17,14 @@ ESPHomeOneWireNGComponent = ow_bus_ng_ns.class_(
     "ESPHomeOneWireNGComponent", cg.Component
 )
 
+
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(ESPHomeOneWireNGComponent),
-        cv.Optional(CONF_PIN): pins.gpio_input_pin_schema,
+        cv.Optional("conf_pin"): pins.gpio_input_pin_schema,
         cv.Optional("input_pin"): pins.gpio_input_pin_schema,
         cv.Optional("output_pin"): pins.gpio_output_pin_schema,
-        cv.Optional("mode", default="bitbang_single"): cv.enum(
+        cv.Optional("conf_mode", default="bitbang_single"): cv.enum(
             {
                 "BITBANG_SINGLE": "bitbang_single",
                 "BITBANG_SPLIT_IO": "bitbang_split_io",
@@ -32,16 +33,20 @@ CONFIG_SCHEMA = cv.Schema(
             },
             upper=True,
         ),
-        cv.Optional("uart_id"): cv.int_,
         cv.Optional("uart"): cv.Schema(
             {
                 cv.Required("tx_pin"): pins.gpio_output_pin_schema,
                 cv.Required("rx_pin"): pins.gpio_input_pin_schema,
-                cv.Optional(CONF_BAUD_RATE, default=115200): cv.positive_int,
+                cv.Optional("baud_rate", default=115200): cv.positive_int,
             }
         ),
     }
 )
+
+
+async def setup_bitbang_single(var, config):
+    pin = await cg.gpio_pin_expression(config["conf_pin"])
+    cg.add(var.set_single_pin(pin))
 
 
 async def setup_bitbang_single(var, config):
@@ -85,18 +90,15 @@ async def setup_uart_full_duplex(var, config):
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID], ESPHomeOneWireNGComponent())
-
-    mode = config.get("mode", "bitbang_single")
-    if mode == "bitbang_single":
-        await setup_bitbang_single(var, config)
-    elif mode == "bitbang_split_io":
-        await setup_bitbang_split_io(var, config)
-    #   elif mode == "uart_bus_single_pin":
-    #     await setup_uart_half_duplex(var, config)
-    elif mode == "uart_bus":
-        await setup_uart_full_duplex(var, config)
+    mode = config["conf_mode"]
+    if mode == "BITBANG_SINGLE":
+        cg.add_define("USE_BITBANG_SINGLE")
+    elif mode == "BITBANG_SPLIT_IO":
+        cg.add_define("USE_BITBANG_SPLIT_IO")
+    elif mode == "UART_BUS":
+        cg.add_define("USE_UART_BUS")
     else:
-        _LOGGER.error("Invalid mode for single pin: %s", mode)
+        _LOGGER.error("Invalid mode for ow_bus_ng: %s", mode)
         return
 
     await cg.register_component(var, config)
