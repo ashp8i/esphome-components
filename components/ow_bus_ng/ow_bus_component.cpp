@@ -31,8 +31,10 @@ void ESPHomeOneWireNGComponent::dump_config() {
 
 bool ESPHomeOneWireNGComponent::perform_reset() {
   if (this->uart_ != nullptr) {
-    this->uart_->transmitBreak();
-    while (this->uart_->peekUint8() == 0) { /* wait */ }
+    this->uart_->enable_tx_pin();
+    this->uart_->set_tx_pin_level(false);
+    delay(30);
+    this->uart_->disable_tx_pin();
   }
   return true;
 }
