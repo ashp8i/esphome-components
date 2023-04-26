@@ -41,9 +41,9 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
   InputPin *input_pin_{nullptr};
   OutputPin *output_pin_{nullptr};
   UARTComponent *uart_{nullptr};
-  OneWire *single_pin_bus_;  // Single pin mode
-  OneWire *split_io_bus_;    // Split IO mode
-  OneWire *uart_bus_;        // UART mode
+  ESPHomeOneWireNGComponent *single_pin_bus_;  // Single pin mode
+  ESPHomeOneWireNGComponent *split_io_bus_;    // Split IO mode
+  ESPHomeOneWireNGComponent *uart_bus_;        // UART mode
 };
 
 }  // namespace ow_bus_ng

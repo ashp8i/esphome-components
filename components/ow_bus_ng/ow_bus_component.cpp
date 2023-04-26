@@ -32,19 +32,19 @@ void ESPHomeOneWireNGComponent::setup() {
   if (this->pin_ != nullptr) {
     if (!perform_reset())
       return;  // No device present
-    single_pin_bus_ = new OneWire(this->pin_->get_pin());
+    single_pin_bus_ = new ESPHomeOneWireNGComponent(this->pin_->get_pin());
   }
 
   if (this->input_pin_ != nullptr && this->output_pin_ != nullptr) {
     if (!perform_reset())
       return;  // No device present
-    split_io_bus_ = new OneWire(this->input_pin_->get_pin(), this->output_pin_->get_pin());
+    split_io_bus_ = new ESPHomeOneWireNGComponent(this->input_pin_->get_pin(), this->output_pin_->get_pin());
   }
 
   if (this->uart_ != nullptr) {
     if (!perform_reset())
       return;  // No device present
-    uart_bus_ = new OneWire(uart);
+    uart_bus_ = new ESPHomeOneWireNGComponent(uart);
     uart_bus_->begin();
   }
 }
