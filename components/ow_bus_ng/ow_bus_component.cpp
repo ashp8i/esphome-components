@@ -16,6 +16,8 @@ ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(uart::UARTComponent *uart) 
 
 void ESPHomeOneWireNGComponent::setup() {
   ESP_LOGCONFIG(TAG, "Setting up UART mode...");
+  // Get TX pin from UART bus
+  this->tx_pin_ = this->uart_->get_tx_pin();
   if (this->uart_ != nullptr) {
     if (!perform_reset())
       return;  // No device present
@@ -27,7 +29,7 @@ void ESPHomeOneWireNGComponent::setup() {
 void ESPHomeOneWireNGComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "  Using UART mode:");
   // ESP_LOGCONFIG(TAG, "    UART bus: %s", this->uart_->get_name().c_str());
-  ESP_LOGCONFIG(TAG, "    UART bus: %s", this->uart_->getID().c_str());
+  ESP_LOGCONFIG(TAG, "    UART bus: %s", this->uart_->get_id().c_str());
 }
 
 bool ESPHomeOneWireNGComponent::perform_reset() {

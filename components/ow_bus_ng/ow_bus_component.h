@@ -34,6 +34,7 @@ class ESPHomeOneWireNGComponent : public Component {
   // InternalGPIOPin *pin_{nullptr};
   // InputPin *input_pin_{nullptr};
   // OutputPin *output_pin_{nullptr};
+  gpio::GPIOPin *tx_pin_{nullptr};
   uart::UARTComponent *uart_{nullptr};
   // ESPHomeOneWireNGComponent *single_pin_bus_;  // Single pin mode
   // ESPHomeOneWireNGComponent *split_io_bus_;    // Split IO mode
