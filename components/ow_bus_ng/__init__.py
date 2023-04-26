@@ -30,8 +30,8 @@ CONFIG_SCHEMA = cv.Schema(
             {
                 "BITBANG_SINGLE": "bitbang_single",
                 "BITBANG_SPLIT_IO": "bitbang_split_io",
-                # "UART_HALF_DUPLEX": "uart_half_duplex",
-                "UART_FULL_DUPLEX": "uart_full_duplex",
+                # "UART_BUS_SINGLE_PIN": "uart_single_pin",
+                "UART_BUS": "uart_bus",
             },
             upper=True,
         ),
@@ -51,7 +51,7 @@ async def setup_bitbang_split_io(var, config):
     cg.add(var.set_split_io(in_pin, out_pin))
 
 
-# async def setup_uart_half_duplex(var, config):
+# async def setup_uart_single_pin(var, config):
 #     if "uart" in config:
 #         await uart.register_uart_device(var, config["uart"])
 #         uart_conf = config["uart"]
@@ -85,8 +85,8 @@ async def to_code(config):
         await setup_bitbang_single(var, config)
     elif mode == "bitbang_split_io":
         await setup_bitbang_split_io(var, config)
-    #   elif mode == "uart_half_duplex" and "uart" in config:
-    #     await setup_uart_half_duplex(var, config)
+    #   elif mode == "uart_single_pin" and "uart" in config:
+    #     await setup_uart_single_pin(var, config)
     elif mode == "uart_full_duplex" and "uart" in config:
         await setup_uart_full_duplex(var, config)
     else:

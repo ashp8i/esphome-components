@@ -10,14 +10,14 @@
 namespace esphome {
 namespace ow_bus_ng {
 
-using InputPin = esphome::gpio::GPIOInputPin;
-using OutputPin = esphome::gpio::GPIOOutputPin;
+using InputPin = InternalGPIOPin;
+using OutputPin = InternalGPIOPin;
 
 enum OneWireSetupMethod {
   ONEWIRE_SETUP_BITBANG_SINGLE_PIN,
   ONEWIRE_SETUP_BITBANG_SPLIT_IO,
-  //  ONEWIRE_SETUP_HARDWARE_UART_HALF_DUPLEX, // No such thing, not supported by UART Component
-  ONEWIRE_SETUP_UART_FULL_DUPLEX,
+  //  ONEWIRE_SETUP_UART_BUS_SINGLE_PIN, // No such thing, not supported by UART Component
+  ONEWIRE_SETUP_UART_BUS,
 };
 
 class ESPHomeOneWireNGComponent : public esphome::Component {
@@ -38,9 +38,9 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
 
   void set_bitbang_split_io(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin);
 
-  // void set_uart_half_duplex(UARTComponent *uart, GPIOPin *tx_pin);
+  // void set_uart_single_pin(UARTComponent *uart, GPIOPin *tx_pin);
 
-  void set_uart_full_duplex(UARTComponent *uart);
+  void set_uart_bus(UARTComponent *uart);
 
   void setup() override;
   void dump_config() override;
