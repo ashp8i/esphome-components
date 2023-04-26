@@ -1,11 +1,12 @@
-import voluptuous as vol
+# import voluptuous as vol
 import logging
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import pins
-import esphome.components.uart as uart
+import esphome.components.uart
 from esphome.const import CONF_ID, CONF_PIN
-from voluptuous import Required, Optional, Any, All, Lower, In
+
+# from voluptuous import Required, Optional, Any, All, Lower, In
 
 DEPENDENCIES = ["uart"]
 
@@ -22,18 +23,15 @@ ESPHomeOneWireNGComponent = ow_bus_ng_ns.class_(
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(ESPHomeOneWireNGComponent),
-        vol.Optional(CONF_PIN): pins.gpio_input_pin_schema,
-        vol.Optional("input_pin"): pins.gpio_input_pin_schema,
-        vol.Optional("output_pin"): pins.gpio_output_pin_schema,
-        vol.Optional("mode", default="bitbang_single"): vol.In(
-            [
-                "bitbang_single",
-                "bitbang_split_io",
-                # "uart_half_duplex",
-                "uart_full_duplex",
-            ]
+        cv.Optional(CONF_PIN): pins.gpio_input_pin_schema,
+        cv.Optional("input_pin"): pins.gpio_input_pin_schema,
+        cv.Optional("output_pin"): pins.gpio_output_pin_schema,
+        cv.Optional("mode", default="bitbang_single"): cv.enum(
+            # ["bitbang_single", "bitbang_split_io", "uart_half_duplex", "uart_full_duplex"], upper=True
+            ["bitbang_single", "bitbang_split_io", "uart_full_duplex"],
+            upper=True,
         ),
-        vol.Optional("uart"): uart.UART_DEVICE_SCHEMA,
+        cv.Optional("uart"): uart.UART_DEVICE_SCHEMA,
     }
 )
 
@@ -49,6 +47,19 @@ async def setup_bitbang_split_io(var, config):
     cg.add(var.set_split_io(in_pin, out_pin))
 
 
+# async def setup_uart_half_duplex(var, config):
+#     if "uart" in config:
+#         await uart.register_uart_device(var, config["uart"])
+#         uart_conf = config["uart"]
+#         cg.add(
+#             var.set_uart(
+#                 uart_conf["tx_pin"], uart_conf["rx_pin"], uart_conf["baud_rate"]
+#             )
+#         )
+#     else:
+#         _LOGGER.error("uart: not specified for uart_half_duplex mode!")
+
+
 async def setup_uart_full_duplex(var, config):
     if "uart" in config:
         await uart.register_uart_device(var, config["uart"])
@@ -59,24 +70,23 @@ async def setup_uart_full_duplex(var, config):
             )
         )
     else:
-        _LOGGER.error("uart: not specified for uart_full_duplex mode!")
+        _LOGGER.error("uart not provided for uart_full_duplex!")
 
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID], ESPHomeOneWireNGComponent())
 
-    if "uart" in config:
+    mode = config.get("mode", "bitbang_single")
+    if mode == "bitbang_single":
+        await setup_bitbang_single(var, config)
+    elif mode == "bitbang_split_io":
+        await setup_bitbang_split_io(var, config)
+    #   elif mode == "uart_half_duplex" and "uart" in config:
+    #     await setup_uart_half_duplex(var, config)
+    elif mode == "uart_full_duplex" and "uart" in config:
         await setup_uart_full_duplex(var, config)
     else:
-        mode = config.get("mode", "bitbang_single")
-        if mode == "bitbang_single":
-            await setup_bitbang_single(var, config)
-        elif mode == "bitbang_split_io":
-            await setup_bitbang_split_io(var, config)
-        elif mode == "uart_full_duplex":
-            await setup_uart_full_duplex(var, config)
-        else:
-            _LOGGER.error("Invalid mode for single pin: %s", mode)
-            return
+        _LOGGER.error("Invalid mode for single pin: %s", mode)
+        return
 
     await cg.register_component(var, config)
