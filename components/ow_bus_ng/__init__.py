@@ -52,8 +52,6 @@ async def to_code(config):
         in_pin = await cg.gpio_pin_expression(config["input_pin"])
         out_pin = await cg.gpio_pin_expression(config["output_pin"])
         cg.add(var.set_split_io(in_pin, out_pin))
-      # elif mode == "uart_half_duplex":
-      #   cg.add(var.set_uart_half_duplex(uart_conf["tx_pin"], uart_conf["rx_pin"], uart_conf["baud_rate"]))
       elif mode == "uart_full_duplex":
         if "uart" not in config:
           _LOGGER.error("UART mode selected but uart: config not provided!")
