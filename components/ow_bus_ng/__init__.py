@@ -37,7 +37,6 @@ CONFIG_SCHEMA = cv.Schema(
             {
                 cv.Required("tx_pin"): pins.gpio_output_pin_schema,
                 cv.Required("rx_pin"): pins.gpio_input_pin_schema,
-                # cv.Optional("baud_rate", default="115200bps"): baud_rate_schema,
                 cv.Optional(CONF_BAUD_RATE, default=115200): cv.positive_int,
             }
         ),

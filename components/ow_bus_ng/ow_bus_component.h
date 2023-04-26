@@ -34,6 +34,7 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
   // void set_uart_bus(UARTComponent *uart);
 
   void setup() override;
+  bool perform_reset();
 
  protected:
   InternalGPIOPin *pin_{nullptr};
