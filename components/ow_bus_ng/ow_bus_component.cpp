@@ -49,6 +49,10 @@ void ESPHomeOneWireNGComponent::setup() {
   }
 }
 
+  // if (this->uart_ != nullptr) this->uart_->begin();     // Initialize UART
+
+  // if (!perform_reset()) return;  // Check for any connected devices
+
 void ESPHomeOneWireNGComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "ESPHomeOneWireNGComponent:");
 
@@ -80,6 +84,15 @@ bool ESPHomeOneWireNGComponent::perform_reset() {
     // Check input pin
     return this->input_pin_->digital_read() == LOW;
   }
+
+  if (this->uart_ != nullptr) {
+    this->uart_->transmit_break();      // Send 1-Wire reset pulse
+    while (this->uart_->peek() == 0) { /* wait */ }
+    return true;                       // Presence pulse detected!
+  }
+
+  return false;
+}
 
   // For UART just call uart_->transmit_break()
   return false;  // If no pin defined
