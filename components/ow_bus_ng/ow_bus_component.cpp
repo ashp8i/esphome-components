@@ -10,13 +10,11 @@ static const char *const TAG = "owbus.ng";
 // Constructor definitions here
 ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent() {}
 
-ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(UARTComponent *uart) {
+ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(uart::UARTComponent *uart) {
   this->uart_ = uart;
-  // Set UART mode
 }
 
 void ESPHomeOneWireNGComponent::setup() {
-  ESP_LOGCONFIG(TAG, "Setting up ESPHomeOneWireNGComponent...");
   ESP_LOGCONFIG(TAG, "Setting up UART mode...");
   if (this->uart_ != nullptr) {
     if (!perform_reset())
@@ -35,8 +33,8 @@ bool ESPHomeOneWireNGComponent::perform_reset() {
   if (this->uart_ != nullptr) {
     this->uart_->transmit_break();
     while (this->uart_->peek() == 0) { /* wait */ }
-    return true;
   }
+  return true;
 }
 
 }  // namespace ow_bus_ng

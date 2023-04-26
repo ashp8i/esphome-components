@@ -12,6 +12,7 @@ namespace ow_bus_ng {
 
 // using InputPin = InternalGPIOPin;
 // using OutputPin = InternalGPIOPin;
+using uart::UARTComponent;
 
 class ESPHomeOneWireNGComponent : public Component {
  public:
@@ -23,7 +24,9 @@ class ESPHomeOneWireNGComponent : public Component {
 
   // ESPHomeOneWireNGComponent(UARTComponent *uart, GPIOPin *tx_pin); // not yet supported, or ever
 
-  ESPHomeOneWireNGComponent(UARTComponent *uart);
+  ESPHomeOneWireNGComponent(uart::UARTComponent *uart);
+
+  uart::UARTComponent *uart_{nullptr};
 
   void setup() override;
   bool perform_reset();
