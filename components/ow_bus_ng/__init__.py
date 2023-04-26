@@ -50,11 +50,16 @@ async def setup_bitbang_split_io(var, config):
 
 
 async def setup_uart_full_duplex(var, config):
-    await uart.register_uart_device(var, config["uart"])
-    uart_conf = config["uart"]
-    cg.add(
-        var.set_uart(uart_conf["tx_pin"], uart_conf["rx_pin"], uart_conf["baud_rate"])
-    )
+    if "uart" in config:
+        await uart.register_uart_device(var, config["uart"])
+        uart_conf = config["uart"]
+        cg.add(
+            var.set_uart(
+                uart_conf["tx_pin"], uart_conf["rx_pin"], uart_conf["baud_rate"]
+            )
+        )
+    else:
+        _LOGGER.error("uart: not specified for uart_full_duplex mode!")
 
 
 async def to_code(config):
