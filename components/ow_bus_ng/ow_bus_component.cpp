@@ -31,13 +31,15 @@ void ESPHomeOneWireNGComponent::set_uart_bus(UARTComponent *uart) {
 }
 
 // Constructor definitions here
-ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent() : pin_config_(OneWirePinConfig::SINGLE_PIN) {}
+ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent() { this->pin_config_ = OneWirePinConfig::SINGLE_PIN; }
 
-ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InternalGPIOPin *pin)
-    : pin_(pin), pin_config_(OneWirePinConfig::SINGLE_PIN) {}
+ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InternalGPIOPin *pin) : pin_(pin) {
+  this->pin_config_ = OneWirePinConfig::SINGLE_PIN;
+}
 
-ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(UARTComponent *uart)
-    : uart_(uart), pin_config_(OneWirePinConfig::UART) {}
+ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(UARTComponent *uart) : uart_(uart) {
+  this->pin_config_ = OneWirePinConfig::UART;
+}
 
 void ESPHomeOneWireNGComponent::setup() {
   Component::setup();  // Call parent class setup()
