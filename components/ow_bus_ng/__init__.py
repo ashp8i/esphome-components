@@ -24,7 +24,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional("conf_pin"): pins.gpio_input_pin_schema,
         cv.Optional("input_pin"): pins.gpio_input_pin_schema,
         cv.Optional("output_pin"): pins.gpio_output_pin_schema,
-        cv.Optional("conf_mode", default="bitbang_single"): cv.enum(
+        cv.Optional("mode", default="bitbang_single"): cv.enum(
             {
                 "BITBANG_SINGLE": "bitbang_single",
                 "BITBANG_SPLIT_IO": "bitbang_split_io",
