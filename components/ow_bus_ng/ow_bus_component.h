@@ -13,18 +13,9 @@ namespace ow_bus_ng {
 using InputPin = InternalGPIOPin;
 using OutputPin = InternalGPIOPin;
 
-enum OneWireSetupMethod {
-  ONEWIRE_SETUP_BITBANG_SINGLE_PIN,
-  ONEWIRE_SETUP_BITBANG_SPLIT_IO,
-  //  ONEWIRE_SETUP_UART_BUS_SINGLE_PIN, // No such thing, not supported by UART Component
-  ONEWIRE_SETUP_UART_BUS,
-};
-
 class ESPHomeOneWireNGComponent : public esphome::Component {
  public:
   ESPHomeOneWireNGComponent();
-
-  ESPHomeOneWireNGComponent(std::initializer_list<OneWireSetupMethod> setup_methods);
 
   ESPHomeOneWireNGComponent(InternalGPIOPin *pin);
 
@@ -36,21 +27,22 @@ class ESPHomeOneWireNGComponent : public esphome::Component {
 
   void set_bitbang_single_pin(InternalGPIOPin *pin);
 
-  void set_bitbang_split_io(InternalGPIOPin *input_pin, InternalGPIOPin *output_pin);
+  void set_bitbang_split_io(InputPin *input_pin, OutputPin *output_pin);
 
   // void set_uart_single_pin(UARTComponent *uart, GPIOPin *tx_pin);
 
   void set_uart_bus(UARTComponent *uart);
 
   void setup() override;
-  void dump_config() override;
 
  protected:
   InternalGPIOPin *pin_{nullptr};
-  InternalGPIOPin *input_pin_{nullptr};
-  InternalGPIOPin *output_pin_{nullptr};
+  InputPin *input_pin_{nullptr};
+  OutputPin *output_pin_{nullptr};
   UARTComponent *uart_{nullptr};
-  std::vector<OneWireSetupMethod> setup_methods_;
+  OneWire *single_pin_bus_;  // Single pin mode
+  OneWire *split_io_bus_;    // Split IO mode
+  OneWire *uart_bus_;        // UART mode
 };
 
 }  // namespace ow_bus_ng
