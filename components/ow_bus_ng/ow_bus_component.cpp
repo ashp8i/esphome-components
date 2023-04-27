@@ -24,7 +24,7 @@ void ESPHomeOneWireNGComponent::setup() {
   if (this->pin_ != nullptr) {
     if (!perform_reset())
       return;  // No device present
-    single_pin_bus_ = new ESPHomeOneWireNGComponent(this->pin_->get_pin());
+    bitbang_single_pin_bus_ = new ESPHomeOneWireNGComponent(this->pin_->get_pin());
   }
 }
 
