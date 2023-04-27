@@ -26,7 +26,7 @@ void ESPHomeOneWireNGComponent::setup() {
   if (this->pin_ != nullptr) {
     if (!perform_reset())
       return;  // No device present
-    bitbang_single_pin_bus_ = new ESPHomeOneWireNGComponent(this->pin_->pin());
+    bitbang_single_pin_bus_ = new ESPHomeOneWireNGComponent(pin_);
   }
 }
 
@@ -37,9 +37,9 @@ void ESPHomeOneWireNGComponent::dump_config() {
 
 bool ESPHomeOneWireNGComponent::perform_reset() {
   if (this->pin_ != nullptr) {
-    this->pin_->digital_write(LOW);
+    this->pin_->digital_write(false);
     delayMicroseconds(480);
-    this->pin_->digital_write(HIGH);
+    this->pin_->digital_write(false);
     delayMicroseconds(70);
   }
 }
