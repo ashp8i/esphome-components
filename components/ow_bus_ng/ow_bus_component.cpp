@@ -10,13 +10,15 @@ static const char *const TAG = "owbus.ng";
 // Constructor definitions here
 ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent() {}
 
-ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InternalGPIOPin *pin) {
-  if (pin->get_pin_mode() != OUTPUT_OPEN_DRAIN) {
-    ESP_LOGE(TAG, "1-Wire pin %d must be in open-drain mode!", pin->get_pin());
-    return;
-  }
-  this->pin_ = pin;
-}
+ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InternalGPIOPin *pin) {}
+
+// ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InternalGPIOPin *pin) {
+//   if (pin->get_pin_mode() != OUTPUT_OPEN_DRAIN) {
+//     ESP_LOGE(TAG, "1-Wire pin %d must be in open-drain mode!", pin->get_pin());
+//     return;
+//   }
+//   this->pin_ = pin;
+// }
 
 void ESPHomeOneWireNGComponent::setup() {
   ESP_LOGCONFIG(TAG, "Setting up ESPHomeOneWireNGComponent...");
@@ -24,7 +26,7 @@ void ESPHomeOneWireNGComponent::setup() {
   if (this->pin_ != nullptr) {
     if (!perform_reset())
       return;  // No device present
-    bitbang_single_pin_bus_ = new ESPHomeOneWireNGComponent(this->pin_->get_pin());
+    bitbang_single_pin_bus_ = new ESPHomeOneWireNGComponent(this->pin_->pin());
   }
 }
 
