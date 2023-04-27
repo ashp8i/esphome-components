@@ -24,9 +24,9 @@ CONFIG_SCHEMA = cv.Schema(
     }
 )
 
-# async def setup_bitbang_single(var, config):
-#     pin = await cg.gpio_pin_expression(config["conf_pin"])
-#     cg.add(var.set_single_pin(pin))
+async def setup_bitbang_single(var, config):
+    pin = await cg.gpio_pin_expression(config["conf_pin"])
+    cg.add(var.set_single_pin(pin))
 
 # async def setup_bitbang_split_io(var, config):
 #     in_pin = await cg.gpio_pin_expression(config["input_pin"])
