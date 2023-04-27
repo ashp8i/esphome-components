@@ -21,6 +21,15 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Required("conf_pin"): pins.gpio_input_pin_schema,
         # cv.Optional("input_pin"): pins.gpio_input_pin_schema,
         # cv.Optional("output_pin"): pins.gpio_output_pin_schema,
+        cv.Optional("mode", default="bitbang_single"): cv.enum(
+            {
+                "BITBANG_SINGLE": "bitbang_single",
+                "BITBANG_SPLIT_IO": "bitbang_split_io",
+                #   "UART_BUS_SINGLE_PIN": "uart_bus_single_pin",
+                "UART_BUS": "uart_bus",
+            },
+            upper=True,
+        ),
     }
 )
 
