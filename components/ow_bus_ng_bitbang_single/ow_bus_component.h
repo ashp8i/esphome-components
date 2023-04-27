@@ -2,6 +2,9 @@
 
 #include "esphome/core/hal.h"
 #include "esphome/core/component.h"
+// #include "esphome/core/defines.h"
+// #include "esphome/core/helpers.h"
+#include "esphome/components/uart/uart.h"
 #include <vector>
 
 namespace esphome {
@@ -27,7 +30,7 @@ class ESPHomeOneWireNGComponent : public Component {
   // InputPin *input_pin_{nullptr};
   // OutputPin *output_pin_{nullptr};
   ESPHomeOneWireNGComponent *bitbang_single_pin_bus_;  // Single pin mode
-  // ESPHomeOneWireNGComponent *bitbang_split_io_bus_;    // Split IO mode
+  // ESPHomeOneWireNGComponent *split_io_bus_;    // Split IO mode
 };
 
 }  // namespace ow_bus_ng

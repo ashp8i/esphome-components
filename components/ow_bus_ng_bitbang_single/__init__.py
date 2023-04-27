@@ -2,7 +2,10 @@ import logging
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import pins
-from esphome.const import CONF_ID, CONF_PIN
+from esphome.components import uart
+from esphome.const import CONF_ID, CONF_PIN, CONF_BAUD_RATE
+
+DEPENDENCIES = ["uart"]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,9 +27,9 @@ CONFIG_SCHEMA = cv.Schema(
     }
 )
 
-# async def setup_bitbang_single(var, config):
-#     pin = await cg.gpio_pin_expression(config["conf_pin"])
-#     cg.add(var.set_single_pin(pin))
+async def setup_bitbang_single(var, config):
+    pin = await cg.gpio_pin_expression(config["conf_pin"])
+    cg.add(var.set_single_pin(pin))
 
 # async def setup_bitbang_split_io(var, config):
 #     in_pin = await cg.gpio_pin_expression(config["input_pin"])

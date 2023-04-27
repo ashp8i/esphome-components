@@ -18,9 +18,9 @@ ESPHomeOneWireNGComponent = ow_bus_ng_ns.class_(
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(ESPHomeOneWireNGComponent),
-        cv.Required("conf_pin"): pins.gpio_input_pin_schema,
-        # cv.Optional("input_pin"): pins.gpio_input_pin_schema,
-        # cv.Optional("output_pin"): pins.gpio_output_pin_schema,
+        # cv.Optional("conf_pin"): pins.gpio_input_pin_schema,
+        cv.Required("input_pin"): pins.gpio_input_pin_schema,
+        cv.Required("output_pin"): pins.gpio_output_pin_schema,
     }
 )
 
@@ -28,19 +28,20 @@ CONFIG_SCHEMA = cv.Schema(
 #     pin = await cg.gpio_pin_expression(config["conf_pin"])
 #     cg.add(var.set_single_pin(pin))
 
-# async def setup_bitbang_split_io(var, config):
-#     in_pin = await cg.gpio_pin_expression(config["input_pin"])
-#     out_pin = await cg.gpio_pin_expression(config["output_pin"])
-#     cg.add(var.set_split_io(in_pin, out_pin))
+async def setup_bitbang_split_io(var, config):
+    in_pin = await cg.gpio_pin_expression(config["input_pin"])
+    out_pin = await cg.gpio_pin_expression(config["output_pin"])
+    cg.add(var.set_split_io(in_pin, out_pin))
 
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID], ESPHomeOneWireNGComponent())
     mode = config["mode"]
-    if mode == "BITBANG_SINGLE":
-        cg.add_define("USE_BITBANG_SINGLE")
+    # if mode == "BITBANG_SINGLE":
+    #     cg.add_define("USE_BITBANG_SINGLE")
     # elif mode == "BITBANG_SPLIT_IO":
-    #     cg.add_define("USE_BITBANG_SPLIT_IO")
+    if mode == "BITBANG_SPLIT_IO":
+        cg.add_define("USE_BITBANG_SPLIT_IO")
     else:
         _LOGGER.error("Invalid mode for ow_bus_ng: %s", mode)
         return
