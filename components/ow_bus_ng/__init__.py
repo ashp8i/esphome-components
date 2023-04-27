@@ -26,7 +26,7 @@ CONFIG_SCHEMA = cv.Schema(
                 "BITBANG_SINGLE": "bitbang_single",
                 "BITBANG_SPLIT_IO": "bitbang_split_io",
                 #   "UART_BUS_SINGLE_PIN": "uart_bus_single_pin",
-                "UART_BUS": "uart_bus",
+                # "UART_BUS": "uart_bus",
             },
             upper=True,
         ),
