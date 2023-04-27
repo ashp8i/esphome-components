@@ -41,7 +41,10 @@ bool ESPHomeOneWireNGComponent::perform_reset() {
     delayMicroseconds(480);
     this->pin_->digital_write(false);
     delayMicroseconds(70);
-  }
+    // Method logic...
+    return true;  // Add return statement
+  } else
+    return false;  // Add return statement
 }
 
 }  // namespace ow_bus_ng
