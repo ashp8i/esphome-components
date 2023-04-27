@@ -18,7 +18,7 @@ ESPHomeOneWireNGComponent = ow_bus_ng_ns.class_(
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(ESPHomeOneWireNGComponent),
-        cv.Required("conf_pin"): pins.gpio_input_pin_schema,
+        cv.Required("pin"): pins.gpio_input_pin_schema,
         # cv.Optional("input_pin"): pins.gpio_input_pin_schema,
         # cv.Optional("output_pin"): pins.gpio_output_pin_schema,
         cv.Optional("mode", default="bitbang_single"): cv.enum(
@@ -34,7 +34,7 @@ CONFIG_SCHEMA = cv.Schema(
 )
 
 async def setup_bitbang_single(var, config):
-    pin = await cg.gpio_pin_expression(config["conf_pin"])
+    pin = await cg.gpio_pin_expression(config["pin"])
     cg.add(var.set_single_pin(pin))
 
 # async def setup_bitbang_split_io(var, config):
