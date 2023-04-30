@@ -21,7 +21,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional("pin"): pins.gpio_input_pin_schema,
         cv.Optional("input_pin"): pins.gpio_input_pin_schema,
         cv.Optional("output_pin"): pins.gpio_output_pin_schema,
-        cv.Optional("mode", default="rmt_single_pin"): cv.enum(
+        cv.Optional("mode", default="single_pin_rmt"): cv.enum(
             {
                 "SINGLE_PIN_BITBANG": "single_pin_bitbang",
                 "SINGLE_PIN_RMT": "single_pin_rmt",
