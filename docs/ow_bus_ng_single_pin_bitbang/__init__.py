@@ -21,10 +21,10 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional("pin"): pins.gpio_input_pin_schema,
         cv.Optional("input_pin"): pins.gpio_input_pin_schema,
         cv.Optional("output_pin"): pins.gpio_output_pin_schema,
-        cv.Optional("mode", default="hybrid_single_pin"): cv.enum(
+        cv.Optional("mode", default="rmt_single_pin"): cv.enum(
             {
                 "SINGLE_PIN_BITBANG": "single_pin_bitbang",
-                "SINGLE_PIN_HYBRID": "single_pin_hybrid",
+                "SINGLE_PIN_RMT": "single_pin_rmt",
                 "SPLIT_IO_BITBANG": "split_io_bitbang",
                 "SPLIT_IO_RMT": "split_io_rmt",
             },
@@ -37,9 +37,9 @@ async def setup_single_pin_bitbang(var, config):
     pin = await cg.gpio_pin_expression(config["pin"])
     cg.add(var.set_single_pin_bitbang(pin))
 
-async def setup_single_pin_hybrid(var, config):
+async def setup_single_pin_rmt(var, config):
     pin = await cg.gpio_pin_expression(config["pin"])
-    cg.add(var.set_single_pin_hybrid(pin))
+    cg.add(var.set_single_pin_rmt(pin))
 
 async def setup_split_io_bitbang(var, config):
     in_pin = await cg.gpio_pin_expression(config["input_pin"])
@@ -57,8 +57,8 @@ async def to_code(config):
     mode = config["mode"]
     if mode == "SINGLE_PIN_BITBANG":
         cg.add_define("USE_SINGLE_PIN_BITBANG")
-    elif mode == "SINGLE_PIN_HYBRID":
-        cg.add_define("USE_SINGLE_PIN_HYBRID")
+    elif mode == "SINGLE_PIN_RMT":
+        cg.add_define("USE_SINGLE_PIN_RMT")
     elif mode == "SPLIT_IO_BITBANG":
         cg.add_define("USE_SPLIT_IO_BITBANG")
     elif mode == "SPLIT_IO_RMT":
