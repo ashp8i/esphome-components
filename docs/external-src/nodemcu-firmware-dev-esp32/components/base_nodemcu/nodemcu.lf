@@ -1,0 +1,17 @@
+[sections:lua_esp_event_cb_table]
+entries:
+    .lua_esp_event_cb_table
+
+[scheme:nodemcu_arrays]
+entries:
+    lua_esp_event_cb_table -> flash_rodata
+
+
+# Important: don't change the alignments below without also updating the
+# _Static_assert over in nodemcu_esp_event.h!
+
+[mapping:nodemcu]
+archive: *
+entries:
+    * (nodemcu_arrays);
+        lua_esp_event_cb_table -> flash_rodata KEEP() ALIGN(4) SURROUND(esp_event_cb_table)

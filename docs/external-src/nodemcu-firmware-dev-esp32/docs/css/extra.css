@@ -1,0 +1,7 @@
+/*https://github.com/mkdocs/mkdocs/issues/2538*/
+.wy-menu-vertical header,
+.wy-menu-vertical p.caption {
+  color: #55a5d9;
+  font-size: 85%;
+  margin: 12px 0 0;
+}
