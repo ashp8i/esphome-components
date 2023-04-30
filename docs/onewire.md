@@ -35,4 +35,3 @@ fields : OneWireBus_ROMCode
 crc : OneWireBus_ROMCode::fields
 family : OneWireBus_ROMCode::fields
 serial_number : OneWireBus_ROMCode::fields
-
