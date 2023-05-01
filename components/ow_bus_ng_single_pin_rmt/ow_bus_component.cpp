@@ -12,6 +12,28 @@ ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent() {}
 
 ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent(InternalGPIOPin *pin) {}
 
+void ESPHomeOneWireNGComponent::setup() {
+    // Configure RMT TX channel
+    rmt_config_t c{};
+    c.channel = RMT_CHANNEL_0;
+    c.gpio_num = this->pin_->get_pin();
+    c.clk_div = 80;
+    c.mem_block_num = 1;
+    c.tx_config.loop_en = false;
+    c.tx_config.carrier_en = false;
+    c.tx_config.idle_level = 1;
+    c.tx_config.idle_output_en = true;
+    this->config_rmt(c);
+    c.rmt_mode = RMT_MODE_TX;
+    rmt_driver_install(c.channel, &c, 0);
+
+    // Set RMT RX channel to use the same GPIO pin
+    rmt_set_gpio(RMT_CHANNEL_1, RMT_MODE_RX, this->pin_->get_pin(), 0);
+
+    // Enable input on GPIO pin 
+    this->pin_->setup_input(HAS_PULL_UP);    
+}
+
 void ESPHomeOneWireNGComponent::setup() { 
   ESP_LOGCONFIG(TAG, "Setting up ESPHomeOneWireNGComponent...");
   ESP_LOGCONFIG(TAG, "Setting up Single Pin RMT/Bit Bang Mode...");

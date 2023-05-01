@@ -7,6 +7,66 @@ namespace ow_bus_ng {
 
 static const char *const TAG = "owbus.ng";
 
+// Bit bang driver info struct 
+struct OneWireBBDriverInfo {
+  gpio_num_t gpio;    // 1-Wire bus GPIO
+  bool bus_state;     // Current bus level (high/low)
+  uint8_t tx_buffer;  // Current TX byte
+  int tx_bits_left;   // Bits remaining to TX in current byte
+  uint8_t rx_buffer;  // Current RX byte
+  int rx_bits_left;   // Bits remaining to RX in current byte 
+};
+
+// Initialize driver
+void oneWireBBDInit(OneWireBBDriverInfo *info, gpio_num_t gpio) {
+  info->gpio = gpio;
+  gpio_set_direction(gpio, GPIO_MODE_OUTPUT);   // Set as output
+  gpio_set_level(gpio, 1);                      // Set high (idle)
+  info->bus_state = true;
+}
+
+// Transmit a bit 
+void oneWireBBTransmitBit(OneWireBBDriverInfo *info, bool bit) {
+  if (bit) {
+    gpio_set_level(info->gpio, 0);               // Set low 
+  } else {
+    gpio_set_level(info->gpio, 1);               // Set high
+  }
+  info->bus_state = !bit;                       // Toggle bus state
+  
+  // Delay for ~5us
+  delayMicroseconds(5);  
+  
+  gpio_set_level(info->gpio, 1);                 // Idle bus high   
+}
+
+// Receive a bit  
+bool oneWireBBReceiveBit(OneWireBBDriverInfo *info) { 
+  gpio_set_direction(info->gpio, GPIO_MODE_INPUT);    // Set as input
+  
+  delayMicroseconds(4);                            // Sample delay
+  
+  bool bit = gpio_get_level(info->gpio);           // Sample level 
+  
+  delayMicroseconds(60);                           // Recovery delay
+  
+  gpio_set_direction(info->gpio, GPIO_MODE_OUTPUT); // Set as output
+  gpio_set_level(info->gpio, 1);                    // Idle bus high  
+  
+  return bit;
+}
+
+struct OneWireBusRMTState {
+  int tx_channel;     // RMT TX channel 
+  int rx_channel;     // RMT RX channel
+  RingbufHandle_t rb; // RX ringbuffer handle
+  int gpio;           // OneWire bus GPIO pin  
+  OneWireBus *bus;    // OneWire bus instance 
+};
+
+OneWireBus *oneWireBusRMTInit(OneWireBusRMTState *state, int gpio, 
+                               int tx_channel, int rx_channel);
+
 // Constructor definitions here
 ESPHomeOneWireNGComponent::ESPHomeOneWireNGComponent() {}
 
@@ -82,6 +142,21 @@ bool ESPHomeOneWireNGComponent::perform_reset() {
   } else
     return false;  // Add return statement
 }
+
+// Definitions
+
+class OWNGBus : public Component { /* ... */ }; 
+
+class OneWireBBComponent : public OneWireBus {
+ public:
+  OneWireBBComponent(PinMode pin_mode, ...) { /* ... */ }
+  
+  void setup() override { ... }
+  
+  // Other OneWireBus methods...
+};
+
+class OneWireRMTCComponent : public OneWireBus { /* ... */ };
 
 }  // namespace ow_bus_ng
 }  // namespace esphome
