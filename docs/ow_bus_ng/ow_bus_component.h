@@ -22,7 +22,7 @@ class OneWireBusDriverInfo;
 class OneWireBusImplementor;
 class OneWireBusLowLevelComponent; 
 class OneWireBusRMT;
-class OneWireBusGPIO;
+class OneWireBusGPIOBitbang;
 class OneWireBusUtils;
 
 // Shared enums and typedefs

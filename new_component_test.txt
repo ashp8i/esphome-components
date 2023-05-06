@@ -1,0 +1,274 @@
+#pragma once
+
+#include "esphome/core/component.h"
+#include "esphome/components/onewire/onewire.h"
+
+namespace esphome {
+namespace owb_native {
+
+struct OWBStatus {
+  bool is_initialized;
+  bool presence_detected;
+};
+
+class OWBNativeComponent : public Component {
+ public:
+  void set_pin(GPIOPin *pin) { pin_ = pin; }
+  void set_use_crc(bool use_crc) { use_crc_ = use_crc; }
+  void set_using_rmt(bool using_rmt) { using_rmt_ = using_rmt; }
+  void set_using_split_io(bool using_split_io) { using_split_io_ = using_split_io; }
+
+  void setup() override;
+  OWBStatus check_bus_status();
+  onewire::OneWireBus_ROMCode request_rom_code();
+  void writebit(bool value); // Add the writebit function
+
+ protected:
+  void single_pin_bitbang_reset();
+  void split_io_bitbang_reset();
+  void single_pin_rmt_reset();
+  void split_io_rmt_reset();
+
+  onewire::OneWire *one_wire_bus_{nullptr};
+  GPIOPin *pin_{nullptr};
+  bool use_crc_{true};
+  bool using_rmt_{false};
+  bool using_split_io_{false};
+};
+
+}  // namespace owb_native
+}  // namespace esphome
+Now, update the owb_native.cpp file and implement the writebit() function and the respective methods:
+
+cpp
+Copy
+#include "owb_native.h"
+
+namespace esphome {
+namespace owb_native {
+
+// ... (existing methods)
+
+void OWBNativeComponent::writebit(bool value) {
+  if (!using_rmt_) {
+    if (!using_split_io_) {
+      single_pin_bitbang_reset();
+    } else {
+      split_io_bitbang_reset();
+    }
+  } else {
+    if (!using_split_io_) {
+      single_pin_rmt_reset();
+    } else {
+      split_io_rmt_reset();
+    }
+  }
+}
+
+void OWBNativeComponent::single_pin_bitbang_reset() {
+  // Implement single-pin bit-banging reset
+}
+
+void OWBNativeComponent::split_io_bitbang_reset() {
+  // Implement split I/O bit-banging reset
+}
+
+void OWBNativeComponent::single_pin_rmt_reset() {
+  // Implement single-pin RMT reset
+}
+
+void OWBNativeComponent::split_io_rmt_reset() {
+  // Implement split I/O RMT reset
+}
+
+}  // namespace owb_native
+}  // namespace esphome
+Finally, update the ESPHome YAML configuration file to include the using_rmt and using_split_io options:
+
+yaml
+Copy
+esphome:
+  name: your_device_name
+  platform: ESP32
+  board: your_board_name
+
+owb_native:
+  pin: D1
+  use_crc: true
+  using_rmt: false
+  using_split_io: false
+
+# Optional: you can use a sensor or text_sensor to display the ROM code
+sensor:
+  - platform: template
+    name: "ROM Code"
+    id: rom_code_sensor
+    update_interval: 60s
+
+To create a more efficient and elegant implementation of a 1-Wire bus master in software, we can abstract the different communication strategies into separate strategy classes. This way, we can reduce branching in the code and make it more modular and easier to maintain.
+
+Here's an example implementation using the strategy pattern:
+
+First, create a base OneWireStrategy class that all communication strategies will inherit from:
+cpp
+Copy
+class OneWireStrategy {
+ public:
+  virtual void reset() = 0;
+  virtual void write_bit(bool value) = 0;
+  virtual bool read_bit() = 0;
+  // Add any other methods needed for deeper communication, e.g., search, read ROM, etc.
+
+  virtual ~OneWireStrategy() {}
+};
+Implement separate strategy classes for each combination of communication methods (e.g., SinglePinBitbangStrategy, SplitIOBitbangStrategy, SinglePinRMTStrategy, and SplitIORMTStrategy). Inherit from the OneWireStrategy class and implement the required methods for each strategy:
+cpp
+Copy
+class SinglePinBitbangStrategy : public OneWireStrategy {
+ public:
+  void reset() override {
+    // Implement single-pin bit-banging reset
+  }
+
+  void write_bit(bool value) override {
+    // Implement single-pin bit-banging write_bit
+  }
+
+  bool read_bit() override {
+    // Implement single-pin bit-banging read_bit
+  }
+
+  // Implement other methods as needed
+};
+
+// Implement the other strategies similarly
+Update the OWBNativeComponent class to use the OneWireStrategy abstraction. Replace the using_rmt_ and using_split_io_ flags with a single OneWireStrategy * member. Instantiate the appropriate strategy object based on the configuration in the setup() method:
+cpp
+Copy
+class OWBNativeComponent : public Component {
+ public:
+  // ...
+
+  void set_strategy(OneWireStrategy *strategy) { strategy_ = strategy; }
+  
+  // ...
+
+ protected:
+  OneWireStrategy *strategy_{nullptr};
+
+  // ...
+};
+
+void OWBNativeComponent::setup() {
+  // Instantiate the appropriate strategy based on the configuration
+  // For example:
+  // if (!using_rmt_ && !using_split_io_)
+  //   strategy_ = new SinglePinBitbangStrategy();
+  // ...
+}
+Update the writebit() method and other communication methods in the OWBNativeComponent class to delegate to the strategy_ object:
+cpp
+Copy
+void OWBNativeComponent::writebit(bool value) {
+  if (strategy_ != nullptr) {
+    strategy_->write_bit(value);
+  }
+}
+
+// Update other communication methods similarly
+Finally, update the ESPHome YAML configuration file to include the strategy configuration:
+yaml
+Copy
+esphome:
+  name: your_device_name
+  platform: ESP32
+  board: your_board_name
+
+owb_native:
+  pin: D1
+  use_crc: true
+  strategy: single_pin_bitbang  # or another strategy
+
+# Optional: you can use a sensor or text_sensor to display the ROM code
+sensor:
+  - platform: template
+    name: "ROM Code"
+    id: rom_code_sensor
+    update_interval: 60s
+By using the strategy pattern, you achieve a more modular and maintainable implementation of the 1-Wire bus master in software. The different communication strategies are encapsulated in separate classes, making it easier to extend, modify, or replace them.
+
+essentially what I'm saying is have a main OneWireBus class that calls functions from OneWireRMTDriver and OneWireBitbangDriver and I'll include a way to handle single and split pin in each driver to keep the code tidy, also could we code like excel or javascript where you store values and access them to perform actions would that be code tidy and memory efficient, use enums structs and typedefs?
+
+Sure, you can create a main OneWireBus class that integrates both OneWireRMTDriver and OneWireBitbangDriver. You can use composition to achieve this, and it will keep the code tidy and modular. Enums, structs, and typedefs can be used to make the code more organized and easy to understand.
+
+Here's a possible implementation:
+
+Define an enum for the pin configuration:
+cpp
+Copy
+enum class PinConfiguration {
+  SINGLE_PIN,
+  SPLIT_IO
+};
+Update the OneWireRMTDriver and OneWireBitbangDriver classes to handle both single and split pin configurations by passing the PinConfiguration as a constructor argument:
+cpp
+Copy
+class OneWireRMTDriver : public OneWireStrategy {
+ public:
+  OneWireRMTDriver(PinConfiguration pin_config) : pin_config_(pin_config) {}
+
+  // Implement the required methods for both single and split pin configurations
+
+ private:
+  PinConfiguration pin_config_;
+};
+
+class OneWireBitbangDriver : public OneWireStrategy {
+ public:
+  OneWireBitbangDriver(PinConfiguration pin_config) : pin_config_(pin_config) {}
+
+  // Implement the required methods for both single and split pin configurations
+
+ private:
+  PinConfiguration pin_config_;
+};
+Create the main OneWireBus class that composes OneWireRMTDriver and OneWireBitbangDriver:
+cpp
+Copy
+class OneWireBus {
+ public:
+  OneWireBus(OneWireStrategy *strategy) : strategy_(strategy) {}
+
+  void reset() {
+    strategy_->reset();
+  }
+
+  void write_bit(bool value) {
+    strategy_->write_bit(value);
+  }
+
+  bool read_bit() {
+    return strategy_->read_bit();
+  }
+
+  // Add other methods as needed, e.g., search, read ROM, etc.
+
+ private:
+  OneWireStrategy *strategy_;
+};
+In your main code or component, create the appropriate OneWireRMTDriver or OneWireBitbangDriver instance based on the configuration, and pass it to the OneWireBus constructor:
+cpp
+Copy
+// Example configuration
+bool use_rmt = true;
+PinConfiguration pin_config = PinConfiguration::SINGLE_PIN;
+
+OneWireStrategy *strategy;
+if (use_rmt) {
+  strategy = new OneWireRMTDriver(pin_config);
+} else {
+  strategy = new OneWireBitbangDriver(pin_config);
+}
+
+OneWireBus bus(strategy);
+Now, you have a main OneWireBus class that integrates both OneWireRMTDriver and OneWireBitbangDriver. Each driver handles both single and split pin configurations. This keeps the code tidy and modular, and the use of enums, structs, and typedefs makes it more organized and easier to understand.
