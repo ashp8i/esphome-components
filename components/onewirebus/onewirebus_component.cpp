@@ -7,18 +7,18 @@ namespace onewire_bus {
 
 static const char *const TAG = "owbus.ng";
 
-OneWireBusComponent::OneWireBusComponent(DriverBase& driverBase) : driverBase_(driverBase) {}
+OneWireBusComponent::OneWireBusComponent(OneWireDriverBase& OneWireDriverBase) : OneWireDriverBase_(OneWireDriverBase) {}
 
-void ComponentX::doSomething() {
-  driverBase_.init();
-  driverBase_.read();
-  driverBase_.write();
+void OneWireBusComponent::doSomething() {
+  OneWireDriverBase_.init();
+  OneWireDriverBase_.read();
+  OneWireDriverBase_.write();
   
   // check if the driver is of type DriverB
-  if (dynamic_cast<DriverB*>(&driverBase_) != nullptr) {
-    DriverB& driverB = dynamic_cast<DriverB&>(driverBase_);
-    driverB.setupB();
-    driverB.modeB();
+  if (dynamic_cast<OneWireBitbangDriver*>(&OneWireDriverBase_) != nullptr) {
+    OneWireBitbangDriver& OneWireBitbangDriver = dynamic_cast<OneWireBitbangDriver&>(OneWireDriverBase_);
+    OneWireBitbangDriver.setupB();
+    OneWireBitbangDriver.modeB();
     // do something specific to driver B
   }
   
